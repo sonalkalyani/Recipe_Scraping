@@ -12,6 +12,7 @@ import org.jsoup.select.Elements;
 
 public class LFV_PartialVegan {
 
+
 	private static ArrayList<recipeObj> recipes = new ArrayList<>();
 		private static ArrayList<String> eliminateList = new ArrayList<>();
 
