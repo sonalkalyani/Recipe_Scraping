@@ -1,4 +1,12 @@
-//
+// Call recipesFinal list from RecipesToAvoid class in order to iterate the eliminate list
+// Call eliminate list against recipesFinal data set
+// Check if Add ingredients exists in the list after elimination
+
+
+
+
+
+
 //package recipeScraping;
 //
 //import java.io.IOException;
