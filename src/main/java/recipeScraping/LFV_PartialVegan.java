@@ -52,7 +52,7 @@ public class LFV_PartialVegan {
 		// System.out.println("eliminate items " + eliminateList );
 
 		// WEBSITE LAUNCH
-	    String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";
+		String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";
 
 		try {
 			Document document = Jsoup.connect(url).timeout(10 * 1000).get();
@@ -172,13 +172,14 @@ public class LFV_PartialVegan {
 				for (String tag : tags) {
 					if (foodCategoryXL.contains(tag)) {
 						foodCategory = foodCategory + tag;
-						System.out.println("food category ------------>  " + foodCategory);
+						System.out.println("food category ------------>  " +foodCategory);
 						break;
 					} else {
 						// System.out.println("Tag NOT FOUND " + tag);
 					}
-
 				}
+				
+				
 
 				// NUMBER OF SERVINGS
 				// HARD CODED
