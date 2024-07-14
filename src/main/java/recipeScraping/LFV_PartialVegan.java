@@ -39,19 +39,23 @@ public class LFV_PartialVegan {
 				ArrayList<String> ids = new ArrayList<>();
 				
 				
-				//Logic
+
 				//removed eliminates + allowed partial 
-				
+
 				//Allowed in partial vegan
-				/* Butter
-				ghee
-				salmon
-				mackerel
-				sardines */
-				
+				/* Butter ghee salmon mackerel sardines */
 				// HARD CODED
 				//integate with Reading Excel
 				
+
+				eliminateList.add("mangoes");
+				eliminateList.add("Eggs");
+				eliminateList.add("Pork");
+				eliminateList.add("ham");
+				eliminateList.add("butter");
+				eliminateList.add("ghee");
+				
+
 //				eliminateList.add("mangoes");
 //				eliminateList.add("Eggs");
 //				eliminateList.add("Pork");
@@ -66,19 +70,18 @@ public class LFV_PartialVegan {
 				
 				//System.out.println("eliminate items " + eliminateList );
 				
+
 				//WEBSITE LAUNCH
 				String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";
 				try {
 					Document document = Jsoup.connect(url).timeout(10 * 1000).get();
 					Elements recipesList = document.select( ".rcc_recipecard");
-					
 					//RECIPE LINKS
 					Elements linksList = document.select("div span a");
 					for (Element link:linksList) {
 						//System.out.println("link initially " + link.attr("abs:href"));
 						links.add(link.attr("abs:href"));
 					}
-					
 					//RECIPE IDS
 					for(Element rc:recipesList) {
 						//System.out.println("*****************");
@@ -88,13 +91,9 @@ public class LFV_PartialVegan {
 						//System.out.println("Recipe id ------------>    " + recipeId);
 						ids.add(recipeId.substring(3));
 					}	
-					
 					int i = 0;
-
 					// loop through the links to access the data for each recipe in a single page
 					for (i = 0; i < links.size()-1; i++) {
-						//System.out.println("Number of Links " + links.size());
-						
 						String link = links.get(i);
 						Document r_page = null;
 						try 
@@ -106,18 +105,20 @@ public class LFV_PartialVegan {
 							if (e.getStatusCode() == 404) continue;
 						}
 
-
 						// INGREDIENTS
 						ArrayList<String> ingredients = new ArrayList<>();
 						Element ingredients_div = r_page.select("div#rcpinglist").first();
 						// get the list of ingredients which are in bold
 						assert ingredients_div != null;
-						Elements ingredients_links = ingredients_div.select("a");
-
-						for (Element e : ingredients_links) {
+						Elements ingredients_qty =  ingredients_div.select("[itemprop=recipeIngredient]");
+						for (Element e : ingredients_qty) {
 							ingredients.add(e.text());
-							//System.out.println("Ingre list ------------->    " + e.text());
-						}
+
+							}
+						
+						String ingredientsFinal = String.join(",", ingredients);
+						System.out.println("Ingriedients ------------->    " + ingredients);
+
 						
 						//CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
 						if (hasEliminatedItems(ingredients)) 
@@ -142,14 +143,11 @@ public class LFV_PartialVegan {
 							prepTime = 0;
 							cookTime = 0;
 						}
-
 						
 						//PREP METHOD
 						ArrayList<String> prepMethod = new ArrayList<>();
-
 						Element prepMethod_div = r_page.select("#recipe_small_steps").first();
 						Elements prepMethod_links = prepMethod_div.select("[itemprop = text]");
-
 						for (Element e : prepMethod_links) {
 							prepMethod.add(e.text());
 						}
@@ -178,7 +176,7 @@ public class LFV_PartialVegan {
 							if (recipeCategoryXL.contains(tag))
 							{
 								recipeCategory = recipeCategory + tag;
-								System.out.println("Recipe category ----------> " + recipeCategory);
+								//System.out.println("Recipe category ----------> " + recipeCategory);
 								break;
 							}
 							else {
@@ -211,40 +209,31 @@ public class LFV_PartialVegan {
 							}
 								
 						}
-						
-						
 						//NUMBER OF SERVINGS
 						//HARD CODED
-						//numServings = 4;
 						numServings = Integer.parseInt( r_page.select("[itemprop=recipeYield]").first().text());
-						//System.out.println("Serving size   -------->   " + numServings );
-								
-						//CUISINE CATEGORY
-						//HARD CODED
-						cuisineCategory.clear();
-//						cuisineCategoryXL.add("Indian");
-//						cuisineCategoryXL.add("South Indian");
-//						cuisineCategoryXL.add("Rajasthani");
-//						cuisineCategoryXL.add("Punjabi");
-//						cuisineCategoryXL.add("Kashmiri");
-//						cuisineCategoryXL.add("North Indian");
+
 						
 						//reading cuisineCategory from excel
 						cuisineCategoryXL=Get_IngredientsList.get_FoodCategory(fileName, 1);
 						//System.out.println("cuisineCategory : " +cuisineCategoryXL);
+
 						
-						//Compare above cuisine category master list list with tags and assign value to cuisineCategory 
 						// call the function checkTags
+
+
 
 						for(String tag:tags)
 						{
 							String tag_found = checkTags(tag, cuisineCategoryXL);
 							if (tag_found != ""){
-								//System.out.println("Checking for tag --------> " + tag);
+
 								cuisineCategory.add(tag_found) ;
 								continue;
 							}
 						}
+
+		
 						//System.out.println("Cuisine category ------------->   " + cuisineCategory);
 						String cuisineCategoryFinal ="";
 						cuisineCategoryFinal = String.join(",", cuisineCategory);
@@ -265,26 +254,19 @@ public class LFV_PartialVegan {
 //								//System.out.println("Tag NOT FOUND " + tag);
 //							}
 //						}
-							
-						
+
+				
 						//DESCRIPTION
 						Element descriptionEle = r_page.select("[name=description]").first();
 						description = descriptionEle.attr("content");
-						//System.out.println("Description ------------>     " + descriptionEle.attr("content"));
+
+
 						
-						
-						//NUTRIENTS
-//						nutrients.add("Trans Fat: 0");
-//						nutrients.add("Sodium: 145gm");
-//						nutrients.add("Protein: 30gm");
-						
+					
 						Element nutrientsList = r_page.selectFirst("table#rcpnutrients");
 						
 						if (nutrientsList != null) {
-			                // Select all rows from the table
 			                Elements rows = nutrientsList.select("tr");
-
-			                // Iterate over the rows
 			                for (Element row : rows) {
 			                    // Select all cells in the row
 			                    Elements cells = row.select("td");
@@ -300,22 +282,25 @@ public class LFV_PartialVegan {
 			            }
 						
 						//What the other ways of writing ingredients
+
+						 //new Recipe -------> calls the *constructor* 
+						String tagsFinal = String.join(",", tags);
+
 						//How to store it in DB - convert into a string
-						
 						
 						 //new Recipe -------> calls the *constructor* 
 						
 						
-						
+
 						recipes.add(new recipeObj(
 								ids.get(i), 
 								name, 
 								recipeCategory,
 								foodCategory,
-								ingredients, 
+								ingredientsFinal, 
 								prepTime, 
 								cookTime,
-								tags,
+								tagsFinal,
 								numServings,
 								cuisineCategoryFinal,
 								description,
@@ -323,13 +308,13 @@ public class LFV_PartialVegan {
 								nutrients,
 								link));
 					}
-
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			
 			//Check if its working by testing some keywords 
+
 
 			//HAS ELIMINATED ITEMS FUNCTION
 			public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
@@ -349,23 +334,39 @@ public class LFV_PartialVegan {
 			{
 				String tags_found = "";
 				String excelVal ="";
-				
+
 				ArrayList<String> tagList = new ArrayList<>(Arrays.asList(tag.split(" ")));
-				System.out.println(tagList);
+
 				
+
 				Iterator<String> it = cuisineCategoryXL.iterator();
 				  while(it.hasNext()){
 					  excelVal = it.next();
 					  if(tagList.contains(excelVal))
 				    	{
-//						  System.out.println("it.next()  ---->   " + excelVal);
+
 						  tags_found =  excelVal;
 				    	}
 				  }
-				  
-				  System.out.println("Returning tags -------->   " + tags_found);
 				  return tags_found;
-				}
-			
 			}
+
+			//Return arraylist of extracted recipes
+			public ArrayList<recipeObj> getRecipes()
+			{
+				return recipes;
+			}
+		
+			
+			//Print recipes
+			public void printRecipes()
+			{
+				for (recipeObj r : recipes)
+				{
+					System.out.println(r);
+				}
+			}
+
+}
+
 				
