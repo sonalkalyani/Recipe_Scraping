@@ -14,6 +14,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class CommonUtils {
 
+
 	WebDriver driver;
 	Document document;
 
@@ -68,4 +69,5 @@ public class CommonUtils {
 return  false;
 			
 }
+
 }

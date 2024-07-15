@@ -5,21 +5,36 @@ import java.util.ArrayList;
 public class recipeObj {
 
 
-		private String ID;
-		private String name;
-		private String recipeCategory; 
-		private String foodCategory;
-		private ArrayList<String> ingredients;
-		private int prepTime;
-		private int cookTime;
-		private ArrayList<String> tags;
-		private int numServings;
-		private String cuisineCategory;
-		private String description;
-		private ArrayList<String> prepMethod;
-		private ArrayList<String> nutrients;
-		private String URL;
+//		private String ID;
+//		private String name;
+//		private String recipeCategory; 
+//		private String foodCategory;
+//		private ArrayList<String> ingredients;
+//		private int prepTime;
+//		private int cookTime;
+//		private ArrayList<String> tags;
+//		private int numServings;
+//		private String cuisineCategory;
+//		private String description;
+//		private ArrayList<String> prepMethod;
+//		private ArrayList<String> nutrients;
+//		private String URL;
 
+	private String ID;
+	private String name;
+	private String recipeCategory; 
+	private String foodCategory;
+	private String ingredients;
+	private int prepTime;
+	private int cookTime;
+	private String tags;
+	private int numServings;
+	private String cuisineCategory;
+	private String description;
+	private ArrayList<String> prepMethod;
+	private ArrayList<String> nutrients;
+	private String URL;
+	
 
 		public recipeObj
 		(
@@ -27,10 +42,10 @@ public class recipeObj {
 				String name, 
 				String recipeCategory, 
 				String foodCategory,
-				ArrayList<String> ingredients, 
+				String ingredients, 
 				int prepTime, 
 				int cookTime, 
-				ArrayList<String> tags,
+				String tags,
 				int numServings,
 				String cuisineCategory,
 				String description,
@@ -71,11 +86,11 @@ public class recipeObj {
 			this.foodCategory = foodCategory;
 		}
 
-		public ArrayList<String> getTags() {
+		public String getTags() {
 			return tags;
 		}
 
-		public void setTags(ArrayList<String> tags) {
+		public void setTags(String tags) {
 			this.tags = tags;
 		}
 
@@ -127,11 +142,11 @@ public class recipeObj {
 			this.name = name;
 		}
 
-		public ArrayList<String> getIngredients() {
+		public String getIngredients() {
 			return ingredients;
 		}
 
-		public void setIngredients(ArrayList<String> ingredients) {
+		public void setIngredients(String ingredients) {
 			this.ingredients = ingredients;
 		}
 
