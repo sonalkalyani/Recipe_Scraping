@@ -52,7 +52,8 @@ public class LFV_PartialVegan {
 				//reading eliminateList from excel
 
 				
-				String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				String fileName = "C:\\Users\\reshm\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				
 				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 1);
 				
 				//System.out.println("eliminate items " + eliminateList );
@@ -63,7 +64,7 @@ public class LFV_PartialVegan {
 				try {
 					Document document = Jsoup.connect(url).timeout(10 * 1000).get();
 					Elements recipesList = document.select( ".rcc_recipecard");
-					//RECIPE LINKS
+					//RECIPE LINKSe1de
 					Elements linksList = document.select("div span a");
 					for (Element link:linksList) {
 						links.add(link.attr("abs:href"));
