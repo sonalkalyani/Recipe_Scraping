@@ -15,9 +15,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
+
 public class LFV_PartialVegan {
 
-
+	//Get a list of recipes which do not incude 
+	
+	
+	
 		private static ArrayList<recipeObj> recipes = new ArrayList<>();
 		private static ArrayList<String> eliminateList = new ArrayList<>();
 
@@ -28,7 +33,7 @@ public class LFV_PartialVegan {
 		static ArrayList<String> cuisineCategoryXL = new ArrayList<>();
 		
 		static ArrayList<String> tags = new ArrayList<>();	
-		static int numServings;
+		static String numServings;
 		static Set<String> cuisineCategory = new HashSet<String>();
 		static String description;
 		static ArrayList<String> nutrients = new ArrayList<>();
@@ -44,32 +49,10 @@ public class LFV_PartialVegan {
 
 				//Allowed in partial vegan
 				/* Butter ghee salmon mackerel sardines */
-				// HARD CODED
-				//integate with Reading Excel
-				
-
-				eliminateList.add("mangoes");
-				eliminateList.add("Eggs");
-				eliminateList.add("Pork");
-				eliminateList.add("ham");
-				eliminateList.add("butter");
-				eliminateList.add("ghee");
-				
-
-//				eliminateList.add("mangoes");
-//				eliminateList.add("Eggs");
-//				eliminateList.add("Pork");
-//				eliminateList.add("ham");
-//				eliminateList.add("butter");
-//				eliminateList.add("ghee");
-				
 				//reading eliminateList from excel
-				
-				String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				//String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
 				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
-				
-				//System.out.println("eliminate items " + eliminateList );
-				
 
 				//WEBSITE LAUNCH
 				String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";
@@ -79,16 +62,13 @@ public class LFV_PartialVegan {
 					//RECIPE LINKS
 					Elements linksList = document.select("div span a");
 					for (Element link:linksList) {
-						//System.out.println("link initially " + link.attr("abs:href"));
 						links.add(link.attr("abs:href"));
 					}
 					//RECIPE IDS
 					for(Element rc:recipesList) {
 						//System.out.println("*****************");
 						String rc_name = (rc.select("div > span > a").text());
-						//System.out.println("Recipe Name " + rc_name);
 						String recipeId =  rc.select("div.rcc_recipecard").attr("id");
-						//System.out.println("Recipe id ------------>    " + recipeId);
 						ids.add(recipeId.substring(3));
 					}	
 					int i = 0;
@@ -117,8 +97,6 @@ public class LFV_PartialVegan {
 							}
 						
 						String ingredientsFinal = String.join(",", ingredients);
-						System.out.println("Ingriedients ------------->    " + ingredients);
-
 						
 						//CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
 						if (hasEliminatedItems(ingredients)) 
@@ -135,9 +113,7 @@ public class LFV_PartialVegan {
 						int cookTime;
 						try {
 							prepTime = Integer.parseInt(r_page.select("[itemprop=prepTime]").first().text().replaceAll("[^\\d]", "").strip());
-							//System.out.println("Prep time " + prepTime);
 							cookTime = Integer.parseInt(r_page.select("[itemprop=cookTime]").first().text().replaceAll("[^\\d]", "").strip());
-							//System.out.println("Cook time " + cookTime);
 							
 						} catch (Exception e) {
 							prepTime = 0;
@@ -162,21 +138,11 @@ public class LFV_PartialVegan {
 						//RECIPE CATEGORY
 						recipeCategory = "";
 						//EXTRACT FROM TAG OR RECIPE NAME
-						//HARD CODED
-//						recipeCategoryXL.add("Breakfast");
-//						recipeCategoryXL.add("Lunch");
-//						recipeCategoryXL.add("Snack");
-//						recipeCategoryXL.add("Dinner");
-						
-						//reading recipeCategory from excel
 						recipeCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 2);
-						//System.out.println("recipeCategory : " +recipeCategoryXL);
-						
 						for(String tag : tags) {
 							if (recipeCategoryXL.contains(tag))
 							{
 								recipeCategory = recipeCategory + tag;
-								//System.out.println("Recipe category ----------> " + recipeCategory);
 								break;
 							}
 							else {
@@ -185,17 +151,7 @@ public class LFV_PartialVegan {
 						}
 						
 						//FOOD CATEGORY
-						// HARD CODED
-//						foodCategoryXL.add("Vegan");
-//						foodCategoryXL.add("Vegetarian");
-//						foodCategoryXL.add("Jain");
-//						foodCategoryXL.add("Eggitarian");
-//						foodCategoryXL.add("Non-veg");
-						
-						//reading foodCategory from excel
 						foodCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 0);
-						//System.out.println("foodCategory : " +foodCategoryXL);
-						
 						foodCategory = "";
 						for(String tag : tags) {
 							if (foodCategoryXL.contains(tag))
@@ -207,22 +163,16 @@ public class LFV_PartialVegan {
 							else {
 								//System.out.println("Tag NOT FOUND " + tag);
 							}
-								
 						}
 						//NUMBER OF SERVINGS
-						//HARD CODED
-						numServings = Integer.parseInt( r_page.select("[itemprop=recipeYield]").first().text());
+						String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
+						System.out.println(str.substring(str.indexOf("M")));
+						numServings = str;
 
-						
-						//reading cuisineCategory from excel
 						cuisineCategoryXL=Get_IngredientsList.get_FoodCategory(fileName, 1);
 						//System.out.println("cuisineCategory : " +cuisineCategoryXL);
-
 						
 						// call the function checkTags
-
-
-
 						for(String tag:tags)
 						{
 							String tag_found = checkTags(tag, cuisineCategoryXL);
@@ -232,39 +182,16 @@ public class LFV_PartialVegan {
 								continue;
 							}
 						}
-
 		
 						//System.out.println("Cuisine category ------------->   " + cuisineCategory);
 						String cuisineCategoryFinal ="";
 						cuisineCategoryFinal = String.join(",", cuisineCategory);
-						System.out.println("Cuisine category ------------->   " + cuisineCategoryFinal);
-						System.out.println("*******************************************************");
 						
-						
-						//Checking for only the first tag and breaks the loop
-						
-//						for(String tag : tags) {
-//							if (cuisineCategoryXL.contains(tag))
-//							{
-//								cuisineCategory = cuisineCategory + tag;
-//								System.out.println("Cuisine category ---------->       " + cuisineCategory);
-//								break;
-//							}
-//							else {
-//								//System.out.println("Tag NOT FOUND " + tag);
-//							}
-//						}
-
-				
 						//DESCRIPTION
 						Element descriptionEle = r_page.select("[name=description]").first();
 						description = descriptionEle.attr("content");
-
-
-						
 					
 						Element nutrientsList = r_page.selectFirst("table#rcpnutrients");
-						
 						if (nutrientsList != null) {
 			                Elements rows = nutrientsList.select("tr");
 			                for (Element row : rows) {
@@ -278,19 +205,11 @@ public class LFV_PartialVegan {
 			                    //System.out.println(); // Move to the next line after each row
 			                }
 			            } else {
-			                System.out.println("Table not found on the page.");
+			                //System.out.println("Table not found on the page.");
 			            }
-						
-						//What the other ways of writing ingredients
-
-						 //new Recipe -------> calls the *constructor* 
 						String tagsFinal = String.join(",", tags);
-
 						//How to store it in DB - convert into a string
-						
 						 //new Recipe -------> calls the *constructor* 
-						
-						
 
 						recipes.add(new recipeObj(
 								ids.get(i), 
@@ -306,16 +225,14 @@ public class LFV_PartialVegan {
 								description,
 								prepMethod,
 								nutrients,
-								link));
+								link)
+								);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			
-			//Check if its working by testing some keywords 
-
-
 			//HAS ELIMINATED ITEMS FUNCTION
 			public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
 				for (String ingredient : Ingredients) {
@@ -334,17 +251,12 @@ public class LFV_PartialVegan {
 			{
 				String tags_found = "";
 				String excelVal ="";
-
 				ArrayList<String> tagList = new ArrayList<>(Arrays.asList(tag.split(" ")));
-
-				
-
 				Iterator<String> it = cuisineCategoryXL.iterator();
 				  while(it.hasNext()){
 					  excelVal = it.next();
 					  if(tagList.contains(excelVal))
 				    	{
-
 						  tags_found =  excelVal;
 				    	}
 				  }
@@ -366,7 +278,6 @@ public class LFV_PartialVegan {
 					System.out.println(r);
 				}
 			}
-
 }
 
 				
