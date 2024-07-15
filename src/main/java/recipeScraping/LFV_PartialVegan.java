@@ -50,9 +50,13 @@ public class LFV_PartialVegan {
 				//Allowed in partial vegan
 				/* Butter ghee salmon mackerel sardines */
 				//reading eliminateList from excel
-				String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
-				//String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
-				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
+
+				
+				String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 1);
+				
+				//System.out.println("eliminate items " + eliminateList );
+				
 
 				//WEBSITE LAUNCH
 				String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";
