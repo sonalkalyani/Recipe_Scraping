@@ -1,3 +1,4 @@
+
 package recipeScraping;
 
 import java.io.IOException;
@@ -53,6 +54,72 @@ public class LFV_FullVegan {
 				//integate with Reading Excel
 				
 //				eliminateList.add("mangoes");
+
+// Call recipesFinal list from RecipesToAvoid class in order to iterate the eliminate list
+// Call eliminate list against recipesFinal data set
+// Check if Add ingredients exists in the list after elimination
+
+
+
+
+
+
+//package recipeScraping;
+//
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.Iterator;
+//import java.util.Objects;
+//
+//import org.jsoup.HttpStatusException;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.nodes.Element;
+//import org.jsoup.select.Elements;
+//
+//public class LFV_FullVegan {
+//
+//			
+//		}
+//=======
+//package recipeScraping;
+//
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.Objects;
+//
+//import org.jsoup.HttpStatusException;
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.nodes.Element;
+//import org.jsoup.select.Elements;
+//
+//public class LFV_FullVegan {
+//
+//		
+//		private static ArrayList<recipeObj> recipes = new ArrayList<>();
+//		private static ArrayList<String> eliminateList = new ArrayList<String>();
+//
+//		static String foodCategory;
+//		static String recipeCategory;
+//		static ArrayList<String> tags = new ArrayList<>();	
+//		static int numServings;
+//		static String cuisineCategory;
+//		static String description;
+//		static ArrayList<String> nutrients = new ArrayList<>();
+//		
+//		
+//		//MAIN METHOD
+//		/////////////////////
+//		////////////////////
+//			public static void main(String[] args) {
+//				ArrayList<String> links = new ArrayList<>();
+//				ArrayList<String> ids = new ArrayList<>();
+//						
+//				
+//				
+//				eliminateList.add("Butter");
+
 //				eliminateList.add("Eggs");
 //				eliminateList.add("Pork");
 //				eliminateList.add("ham");
@@ -306,23 +373,23 @@ public class LFV_FullVegan {
 						 //new Recipe -------> calls the *constructor* 
 						
 						
-						
-						recipes.add(new recipeObj(
-								ids.get(i), 
-								name, 
-								recipeCategory,
-								foodCategory,
-								ingredients, 
-								prepTime, 
-								cookTime,
-								tags,
-								numServings,
-								cuisineCategoryFinal,
-								description,
-								prepMethod,
-								nutrients,
-								link));
-					}
+//						
+//						recipes.add(new recipeObj(
+//								ids.get(i), 
+//								name, 
+//								recipeCategory,
+//								foodCategory,
+//								ingredients, 
+//								prepTime, 
+//								cookTime,
+//								tags,
+//								numServings,
+//								cuisineCategoryFinal,
+//								description,
+//								prepMethod,
+//								nutrients,
+//								link));
+				}
 
 				} catch (IOException e) {
 					e.printStackTrace();
