@@ -6,28 +6,41 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import recipeScraping.ConnectToDatabase;
+import recipeScraping.LFV_PartialVegan;
+
 public class InsertRecordsInDB {
 
-    private static final String URL = "jdbc:postgresql://localhost:5433/postgres";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "demo123";
-
-    public static void main(String[] args) throws IOException {
-        Connection connection = null;
+	private String dburl = "jdbc:postgresql://localhost:5433/postgres";
+	String user = "postgres";
+	String password = "demo123";
+	Connection connection;
+	
+    public void InsertData() throws IOException {
+        
+       // this.dbconnection = dbconnection;
+        
         PreparedStatement preparedStatement = null;
-        Document doc =Jsoup.connect("https://www.tarladalal.com/RecipeAtoZ.aspx").timeout(5000).get();
+        Document doc =Jsoup.connect("https://www.tarladalal.com/RecipeAtoZ.aspx").get();
 		Elements body = doc.select(".rcc_recipecard");
-
-        try {
-            // Establish a connection to the database
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+		try {
+			connection = DriverManager.getConnection(dburl, user, password);
+		if (connection != null) {
+        	
+        	
             connection.setAutoCommit(false); // Disable auto-commit for batch processing
+            System.out.println("Connected to the PostgreSQL server successfully.");
 
+		} else {
+
+			System.out.println("Failed to connect to the PostgreSQL server.");
+		}
             // Create a prepared statement for inserting records
             String sql = "INSERT INTO demo_recipes (id) VALUES (?)";
             preparedStatement = connection.prepareStatement(sql);
@@ -66,5 +79,11 @@ public class InsertRecordsInDB {
                 e.printStackTrace();
             }
         }
+    }
+    
+    public static void main(String args[]) throws IOException {
+    	
+    	InsertRecordsInDB datainsert = new InsertRecordsInDB();
+    	datainsert.InsertData();
     }
 }
