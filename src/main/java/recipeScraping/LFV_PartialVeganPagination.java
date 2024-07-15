@@ -37,7 +37,8 @@ public class LFV_PartialVeganPagination {
 
 	private static ArrayList<recipeObj1> recipes = new ArrayList<>();
 	private static ArrayList<String> eliminateList = new ArrayList<>();
-
+	private static ArrayList<String> AddToList = new ArrayList<>();
+	
 	static String foodCategory;
 	static String recipeCategory;
 	static ArrayList<String> recipeCategoryXL = new ArrayList<>();
@@ -58,6 +59,7 @@ public class LFV_PartialVeganPagination {
 
 	public static ArrayList<recipeObj1> recipesList() throws IOException
 	{
+		int totalRecipes =0;
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 
@@ -134,7 +136,7 @@ public class LFV_PartialVeganPagination {
 						// CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
 						if (hasEliminatedItems(ingredients)) { // System.out.println(" has elminated is TRUE");
 							{
-							System.out.println("Inside the hasEliminated looooooooooooooooooooooop");
+							System.out.println("Inside the has Eliminated looooooooooooooooooooooop");
 							continue;
 							}
 						}
@@ -166,15 +168,16 @@ public class LFV_PartialVeganPagination {
 							prepMethod.add(e.text());
 						}
 						
-//						//Checking if recipe is from the 'Avoid list'
-//						try {
-//							if (recipesToBeAvoided(prepMethod)) {
-//								continue;
-//							}
-//						} catch (Exception e1) {
-//							// TODO Auto-generated catch block
-//							e1.printStackTrace();
-//						}
+						//Checking if recipe is from the 'Avoid list'
+						try {
+							if (recipesToBeAvoided(prepMethod)) {
+								System.out.println("Avoiding this recipe......................");
+								continue;
+							}
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						
 						
 						
@@ -245,7 +248,18 @@ public class LFV_PartialVeganPagination {
 						} 
 						
 						
+						//Check if the recipe contains at least one item from the ADD list, otherwise ignore it
+						AddToList = Get_IngredientsList.get_EliminateList(fileName, 2);
+						if (recipesGoodToAdd(ingredients) == false) { // System.out.println(" Does exist is FALSE");
+							{
+								//System.out.println("Inside the Add list continue false ++++++++++++++      ");
+								continue;
+							}
+						}
+						
+						
 						String tagsFinal = String.join(",", tags);
+						totalRecipes++;
 						recipes.add(
 								new recipeObj1(
 								ids.get(i), 
@@ -266,15 +280,17 @@ public class LFV_PartialVeganPagination {
 					}
 				} 
 			}
+		System.out.println("Total number of recipes    " + totalRecipes);
 		return recipes;
 	}
+	
+	
 
 	// HAS ELIMINATED ITEMS FUNCTION
 	public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
-		for (String ingredient : Ingredients) {
-			for (String restrictedItem : eliminateList) {
-				if (restrictedItem.contains(ingredient)) {
-					System.out.println("Eliminated item ----->    " + restrictedItem);
+		for (String str : Ingredients) {
+			for (String str2 : eliminateList) {
+				if (str2.contains(str)) {
 					return true;
 				}
 			}
@@ -309,37 +325,31 @@ public class LFV_PartialVeganPagination {
 		}
 	}
 	
-//	//Recipes to avoid 
-//	public static boolean recipesToBeAvoided(ArrayList<String> prepMethod) {
-//
-//		List<String> recipesToAvoidList = Arrays
-//				.asList(new String[] { "fried food", "microwave", "ready meals", "chips", "crackers" });
-//		for (String str : prepMethod) {
-//			for (String str2 : recipesToAvoidList) {
-//				if (str.contains(str2)) {
-//					System.out.println("String matches" + str);
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
-//
-//	
-//	public static boolean recipesGoodToAdd(ArrayList<String> ) {
-//
-//		List<String> recipesToAvoidList = Arrays
-//				.asList(new String[] { "fried food", "microwave", "ready meals", "chips", "crackers" });
-//		for (String str : prepMethod) {
-//			for (String str2 : recipesToAvoidList) {
-//				if (str.contains(str2)) {
-//					System.out.println("String matches" + str);
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
+	//Recipes to avoid 
+	public static boolean recipesToBeAvoided(ArrayList<String> prepMethod) {
+		List<String> recipesToAvoidList = Arrays
+				.asList(new String[] { "fried food", "microwave", "ready meals", "chips", "crackers" });
+		for (String str : prepMethod) {
+			for (String str2 : recipesToAvoidList) {
+				if (str.contains(str2)) {
+					System.out.println("String matches" + str);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-	
+	//Make sure the final recipes contain atleast one item from this list
+	public static boolean recipesGoodToAdd(ArrayList<String> Ingredients ) {
+		for (String ingredient : Ingredients) {
+			for (String AddItem : AddToList) {
+				if (AddItem.contains(ingredient)) {
+					//System.out.println("AddItem ----->    " + AddItem);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
