@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.jsoup.Jsoup;
@@ -14,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import recipeScraping.ConnectToDatabase;
 import recipeScraping.LFV_PartialVegan;
+import recipeScraping.recipeObj1;
 
 public class InsertRecordsInDB {
 
@@ -21,10 +23,10 @@ public class InsertRecordsInDB {
 	String user = "postgres";
 	String password = "demo123";
 	Connection connection;
-	
+	private static ArrayList<recipeObj1> recipes = new ArrayList<>();
     public void InsertData() throws IOException {
         
-       // this.dbconnection = dbconnection;
+        this.recipes = recipes;
         
         PreparedStatement preparedStatement = null;
         Document doc =Jsoup.connect("https://www.tarladalal.com/RecipeAtoZ.aspx").get();
