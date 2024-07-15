@@ -67,7 +67,7 @@ public class Get_IngredientsList {
 	
 	
 	public static void main(String[] args) throws IOException {
-		String fileName = "/Users/saumdas/git/Recipe_Scraping/Ingredients.xlsx";
+		String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
 
 
 		ArrayList<String> eliminateList_FV = get_EliminateList(fileName, 0); // read column 1

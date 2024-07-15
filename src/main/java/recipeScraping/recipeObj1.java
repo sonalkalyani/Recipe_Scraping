@@ -2,7 +2,7 @@ package recipeScraping;
 
 import java.util.ArrayList;
 
-public class recipeObj {
+public class recipeObj1 {
 
 
 //		private String ID;
@@ -31,12 +31,12 @@ public class recipeObj {
 	private String numServings;
 	private String cuisineCategory;
 	private String description;
-	private ArrayList<String> prepMethod;
-	private ArrayList<String> nutrients;
+	private String prepMethod;
+	private String nutrients;
 	private String URL;
 	
 
-		public recipeObj
+		public recipeObj1
 		(
 				String ID, 
 				String name, 
@@ -49,8 +49,8 @@ public class recipeObj {
 				String numServings,
 				String cuisineCategory,
 				String description,
-				ArrayList<String> prepMethod,
-				ArrayList<String> nutrients,
+				String prepMethod,
+				String nutrients,
 				String URL 
 		)
 		{
@@ -118,11 +118,11 @@ public class recipeObj {
 			this.description = description;
 		}
 
-		public ArrayList<String> getNutrients() {
+		public String getNutrients() {
 			return nutrients;
 		}
 
-		public void setNutrients(ArrayList<String> nutrients) {
+		public void setNutrients(String nutrients) {
 			this.nutrients = nutrients;
 		}
 
@@ -166,11 +166,11 @@ public class recipeObj {
 			this.cookTime = cookTime;
 		}
 
-		public ArrayList<String> getPrepMethod() {
+		public String getPrepMethod() {
 			return prepMethod;
 		}
 
-		public void setPrepMethod(ArrayList<String> prepMethod) {
+		public void setPrepMethod(String prepMethod) {
 			this.prepMethod = prepMethod;
 		}
 
