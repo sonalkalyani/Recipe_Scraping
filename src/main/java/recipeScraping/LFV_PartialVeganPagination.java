@@ -1,6 +1,7 @@
 package recipeScraping;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,11 +22,23 @@ import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
 
 public class LFV_PartialVeganPagination {
 
+	
+	
+	/*
+	 * This list has Eliminated logic
+	 * Need to call Recipes to avoid using a function already at the end of this file
+	 * Need to add "Add ingreinets logic" with a new function
+	 */
+	
+	
+	
+	
 	// Get a list of recipes which do not incude
 
 	private static ArrayList<recipeObj1> recipes = new ArrayList<>();
 	private static ArrayList<String> eliminateList = new ArrayList<>();
-
+	private static ArrayList<String> AddToList = new ArrayList<>();
+	
 	static String foodCategory;
 	static String recipeCategory;
 	static ArrayList<String> recipeCategoryXL = new ArrayList<>();
@@ -39,96 +52,72 @@ public class LFV_PartialVeganPagination {
 	static ArrayList<String> nutrients = new ArrayList<>();
 
 	// MAIN METHOD
-	public static void main(String[] args) throws IOException 
+	public static void main(String[] args) throws IOException {
+
+		System.out.println(recipesList());
+	}
+
+	public static ArrayList<recipeObj1> recipesList() throws IOException
 	{
+		int totalRecipes =0;
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 
-		// removed eliminates + allowed partial
+		// remove eliminates + allowed partial  - TO BE DONE
 
 		// Allowed in partial vegan
 		/* Butter ghee salmon mackerel sardines */
-		// reading eliminateList from excel
 		String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
-		// String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList(fileName, 0);
-		System.out.println("Eliminate List      ------->   " + eliminateList );
 		
-		
-		char letter = 0;
-		char[] arr = { 'A'};
-		//, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-			//	'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-		for (int p = 0; p <= arr.length - 1; p++) {
-			letter = arr[p];
-			String urlMain = "https://www.tarladalal.com/RecipeAtoZ.aspx";
-			Document doc = null;
-			doc = Jsoup.connect(urlMain).timeout(20 * 1000).get();
-			//doc = Jsoup.connect(urlMain).get();
-			// Elements pagesElements = doc.select("#maincontent div[1] div[2] a");
-			Elements pagesElements = doc.select("#maincontent > div:nth-child(1) > div:nth-child(2) a");
-			int numberOfPageElementsDisplayed = pagesElements.size();
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+		String baseUrl = sampleUrl+"1";
+		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
+		int pageCount=0;
+		for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
+			System.out.println("At page ####  :  " + alphabet );
+			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
+			String url_part2 = "&pageindex=";
+			String url_AZ = url_part1+alphabet+url_part2+"1";
+			Document AZ_Doc = Jsoup.connect(url_AZ).get();
+			Elements pageList = AZ_Doc.select("#maincontent > div:nth-child(1) > div:nth-child(2) a");
+			pageCount = Integer.parseInt(pageList.last().text()); 
+			System.out.println("number of pages: "+pageList.last().text());   
 			
-			System.out.println("numberOfPageElementsDisplayed  -------->   " + numberOfPageElementsDisplayed);
-			
-			System.out.println("Number of pages in K   ---------" + pagesElements.get(numberOfPageElementsDisplayed-1).text());
-			
-			
-			
-			
-			Element lastPageElement = pagesElements.get(numberOfPageElementsDisplayed - 1);
-			int lastPage = Integer.parseInt(lastPageElement.text());
-			
-			System.out.println("lastPage    ---------->   " + lastPage);
-			// Looping through Pages
-			//for (int pageNum = 1; pageNum <= lastPage; pageNum++) {
-			for (int pageNum = 1; pageNum <= 2; pageNum++) {
+			for(int page =1; page <= pageCount; page++) {
+				//System.out.println("Getting inside the loop for page number:  " + page );
+				String url = url_part1+alphabet+url_part2+page;
+				Document currentDoc = Jsoup.connect(url).get();
+				Elements recipesList = currentDoc.select( ".rcc_recipecard");
+				// STORING RECIPE IDS AND NAMES
 				
-				String url = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=" + letter + "&pageindex="
-						+ pageNum;
-				System.out.println("Current page number  ------->     " + pageNum);
-				//System.out.println("URL ----> " + url);
 				
-				// WEBSITE LAUNCH
-				try {
-					Document document = null;
-					document = Jsoup.connect(url).timeout(5 * 1000).get();
-					//document = Jsoup.connect(url).get();
-					Elements recipesList = null;
-					recipesList = document.select(".rcc_recipecard");
+				for(Element rc:recipesList) {
+					String rc_name = (rc.select("div.rcc_recipecard span.rcc_recipename a").text());
+					String recipeId = rc.select("div.rcc_recipecard").attr("id");
+					ids.add(recipeId.substring(3));
+					System.out.println("Recipe Name " + rc_name);
 					
+				}
 					// RECIPE LINKS
-					System.out.println("Number of recipes on this page --------------" + recipesList.size());
 					
 					Elements linksList = null;
-					links.clear();
-					
-					ids.clear();
-					
-					linksList = document.select("div.rcc_recipecard span.rcc_recipename a");
+					linksList = currentDoc.select("div.rcc_recipecard span.rcc_recipename a");
 					for (Element link : linksList) {
 						links.add(link.attr("abs:href"));
 					}
 					
-					
-					// RECIPE IDS
-					for (Element rc : recipesList) {
-						// System.out.println("*****************");
-						//String rc_name = (rc.select("div > span > a").text());
-						String recipeId = rc.select("div.rcc_recipecard").attr("id");
-						ids.add(recipeId.substring(3));
-					}
 					int i = 0;
 					// loop through the links to access the data for each recipe in a single page
 					for (i = 0; i < links.size() - 1; i++) {
-						//System.out.println("Value of i ---------- "+ (links.size()-1));
 						String link = links.get(i);
-						
-						//System.out.println("link for r_page   ------>   " + link);
 						Document r_page = null;
-						try {
+						try 
+						{
 							r_page = Jsoup.connect(link).get();
-						} catch (HttpStatusException e) {
+						} 
+						catch (HttpStatusException e) 
+						{
 							if (e.getStatusCode() == 404)
 								continue;
 						}
@@ -136,7 +125,6 @@ public class LFV_PartialVeganPagination {
 						// INGREDIENTS
 						ArrayList<String> ingredients = new ArrayList<>();
 						Element ingredients_div = r_page.select("div#rcpinglist").first();
-						// get the list of ingredients which are in bold
 						assert ingredients_div != null;
 						Elements ingredients_qty = ingredients_div.select("[itemprop=recipeIngredient]");
 						for (Element e : ingredients_qty) {
@@ -145,27 +133,21 @@ public class LFV_PartialVeganPagination {
 						}
 
 						String ingredientsFinal = String.join(",", ingredients);
-
 						// CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
 						if (hasEliminatedItems(ingredients)) { // System.out.println(" has elminated is TRUE");
 							{
-								
-							System.out.println("Inside the hasEliminated looooooooooooooooooooooop");
+							System.out.println("Inside the has Eliminated looooooooooooooooooooooop");
 							continue;
 							}
 						}
 						
-						
 						String name= "";
-						
 						// RECIPE NAME
 						name = Objects.requireNonNull(r_page.select("#ctl00_cntrightpanel_lblRecipeName"))
 								.text();
-						//System.out.println("Recipe Name ----------->      " + name);
 
 						// PREP AND COOK TIME
-						int prepTime;
-						int cookTime;
+						int prepTime,cookTime;
 						try {
 							prepTime = Integer.parseInt(r_page.select("[itemprop=prepTime]").first().text()
 									.replaceAll("[^\\d]", "").strip());
@@ -185,7 +167,20 @@ public class LFV_PartialVeganPagination {
 						for (Element e : prepMethod_links) {
 							prepMethod.add(e.text());
 						}
-
+						
+						//Checking if recipe is from the 'Avoid list'
+						try {
+							if (recipesToBeAvoided(prepMethod)) {
+								System.out.println("Avoiding this recipe......................");
+								continue;
+							}
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						
+						
 						prepMethodStr = String.join(",", prepMethod);
 						
 						// TAGS
@@ -197,14 +192,11 @@ public class LFV_PartialVeganPagination {
 
 						// RECIPE CATEGORY
 						recipeCategory = "";
-						// EXTRACT FROM TAG OR RECIPE NAME
 						recipeCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 2);
 						for (String tag : tags) {
 							if (recipeCategoryXL.contains(tag)) {
 								recipeCategory = recipeCategory + tag;
 								break;
-							} else {
-								// System.out.println("Tag NOT FOUND " + tag);
 							}
 						}
 
@@ -216,21 +208,16 @@ public class LFV_PartialVeganPagination {
 								foodCategory = foodCategory + tag;
 								// System.out.println("food category ------------> " + foodCategory);
 								break;
-							} else {
-								// System.out.println("Tag NOT FOUND " + tag);
 							}
 						}
 						// NUMBER OF SERVINGS
 						numServings="";
 						String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
-						// System.out.println(str.substring(str.indexOf("M")));
 						numServings = str;
 
 						cuisineCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 1);
-						// System.out.println("cuisineCategory : " +cuisineCategoryXL);
 
 						cuisineCategory.clear();
-						// call the function checkTags
 						for (String tag : tags) {
 							String tag_found = checkTags(tag, cuisineCategoryXL);
 							if (tag_found != "") {
@@ -240,50 +227,39 @@ public class LFV_PartialVeganPagination {
 							}
 						}
 
-						// System.out.println("Cuisine category -------------> " + cuisineCategory);
 						String cuisineCategoryFinal = "";
 						cuisineCategoryFinal = String.join(",", cuisineCategory);
 
 						// DESCRIPTION
 						Element descriptionEle = r_page.select("[name=description]").first();
 						description = descriptionEle.attr("content");
-
+						
+						//NUTRIENTS
 						Element nutrientsList = r_page.selectFirst("table#rcpnutrients");
-						
 						String nutrientsString="";
-						
 						if (nutrientsList != null) {
 							Elements rows = nutrientsList.select("tr");
 							for (Element row : rows) {
-								// Select all cells in the row
 								Elements cells = row.select("td");
-
-								// Print cell text
 								for (Element cell : cells) {
-									// System.out.print(cell.text().trim() + "\t");
 									nutrientsString = nutrientsString + " " + cell.text().trim() + " ";
-											
 								}
-								// System.out.println(); // Move to the next line after each row
 							}
-						} else {
-							// System.out.println("Table not found on the page.");
+						} 
+						
+						
+						//Check if the recipe contains at least one item from the ADD list, otherwise ignore it
+						AddToList = Get_IngredientsList.get_EliminateList(fileName, 2);
+						if (recipesGoodToAdd(ingredients) == false) { // System.out.println(" Does exist is FALSE");
+							{
+								//System.out.println("Inside the Add list continue false ++++++++++++++      ");
+								continue;
+							}
 						}
 						
 						
-						
 						String tagsFinal = String.join(",", tags);
-						// How to store it in DB - convert into a string
-						// new Recipe -------> calls the *constructor*
-
-						//System.out.println(ids.get(i));
-								
-								/* + " " + name + " " + recipeCategory + " " + 
-								foodCategory + " " + ingredientsFinal + " " + prepTime + " " + 
-								cookTime + " " + tagsFinal + " " + numServings + " " + 
-								cuisineCategoryFinal + " " + description + " " + prepMethodStr + " " + 
-								nutrientsString + " " + link);*/
-						
+						totalRecipes++;
 						recipes.add(
 								new recipeObj1(
 								ids.get(i), 
@@ -302,19 +278,19 @@ public class LFV_PartialVeganPagination {
 								link)
 								);
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} 
 			}
-		}
+		System.out.println("Total number of recipes    " + totalRecipes);
+		return recipes;
 	}
+	
+	
 
 	// HAS ELIMINATED ITEMS FUNCTION
 	public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
-		for (String ingredient : Ingredients) {
-			for (String restrictedItem : eliminateList) {
-				if (restrictedItem.contains(ingredient)) {
-					System.out.println("Eliminated item ----->    " + restrictedItem);
+		for (String str : Ingredients) {
+			for (String str2 : eliminateList) {
+				if (str2.contains(str)) {
 					return true;
 				}
 			}
@@ -347,5 +323,33 @@ public class LFV_PartialVeganPagination {
 		for (recipeObj1 r : recipes) {
 			System.out.println(r);
 		}
+	}
+	
+	//Recipes to avoid 
+	public static boolean recipesToBeAvoided(ArrayList<String> prepMethod) {
+		List<String> recipesToAvoidList = Arrays
+				.asList(new String[] { "fried food", "microwave", "ready meals", "chips", "crackers" });
+		for (String str : prepMethod) {
+			for (String str2 : recipesToAvoidList) {
+				if (str.contains(str2)) {
+					System.out.println("String matches" + str);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	//Make sure the final recipes contain atleast one item from this list
+	public static boolean recipesGoodToAdd(ArrayList<String> Ingredients ) {
+		for (String ingredient : Ingredients) {
+			for (String AddItem : AddToList) {
+				if (AddItem.contains(ingredient)) {
+					//System.out.println("AddItem ----->    " + AddItem);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

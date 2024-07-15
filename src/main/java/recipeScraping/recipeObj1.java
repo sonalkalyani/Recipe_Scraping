@@ -4,22 +4,6 @@ import java.util.ArrayList;
 
 public class recipeObj1 {
 
-
-//		private String ID;
-//		private String name;
-//		private String recipeCategory; 
-//		private String foodCategory;
-//		private ArrayList<String> ingredients;
-//		private int prepTime;
-//		private int cookTime;
-//		private ArrayList<String> tags;
-//		private int numServings;
-//		private String cuisineCategory;
-//		private String description;
-//		private ArrayList<String> prepMethod;
-//		private ArrayList<String> nutrients;
-//		private String URL;
-
 	private String ID;
 	private String name;
 	private String recipeCategory; 
