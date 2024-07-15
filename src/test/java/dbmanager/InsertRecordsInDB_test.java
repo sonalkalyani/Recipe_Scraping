@@ -23,7 +23,7 @@ public class InsertRecordsInDB_test {
 	private String dburl = "jdbc:postgresql://localhost:5433/postgres";
 	private String user = "postgres";
 	private String password = "demo123";
-	
+	LFV_PartialVeganPagination getrecipes = new LFV_PartialVeganPagination();
 	
     public void InsertData() throws IOException {
     	
@@ -34,14 +34,28 @@ public class InsertRecordsInDB_test {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
        // this.dbconnection = dbconnection;
         
-//        PreparedStatement preparedStatement = null;
-//        Document doc =Jsoup.connect("https://www.tarladalal.com/RecipeAtoZ.aspx").get();
+//       PreparedStatement preparedStatement = null;
+        Document doc =Jsoup.connect("https://www.tarladalal.com/RecipeAtoZ.aspx").get();
 //		Elements body = doc.select(".rcc_recipecard");
 		try (Connection conn = DriverManager.getConnection(dburl, user, password);
+				
 			 PreparedStatement statement = conn.prepareStatement(sql))
 		{
+			
+			if (conn != null) {
+	        	
+	        	
+	            conn.setAutoCommit(false); // Disable auto-commit for batch processing
+	            System.out.println("Connected to the PostgreSQL server successfully.");
+
+			} else 
+
+				System.out.println("Failed to connect to the PostgreSQL server.");
+			
 			for (recipeObj1 recipe : recipes) 
 		{
+				ArrayList<recipeObj1> rec = getrecipes.getRecipes();
+				
 			statement.setString(1, recipe.getID());
 			statement.setString(2, recipe.getName());
             statement.setString(3, recipe.getRecipeCategory());
@@ -67,8 +81,7 @@ public class InsertRecordsInDB_test {
         }
     }
    public static void main(String[] args) throws IOException {
-	
-	  // ArrayList<recipeObj1> recobj = LFV_PartialVeganPagination.getRecipes();
+
 	   InsertRecordsInDB_test recipeinsert = new InsertRecordsInDB_test();
 	   
 	   recipeinsert.InsertData();

@@ -44,13 +44,14 @@ public class InsertRecordsInDB {
 			System.out.println("Failed to connect to the PostgreSQL server.");
 		}
             // Create a prepared statement for inserting records
-            String sql = "INSERT INTO demo_recipes (id) VALUES (?)";
+            String sql = "INSERT INTO demo_recipes (recipe_id) VALUES (?)";
             preparedStatement = connection.prepareStatement(sql);
             	
             	for (Element recipeid : body) {  			
         			String recid = recipeid.select("div.rcc_recipecard").attr("id");
         			String modifiedRecid = recid.replaceAll("^[a-zA-Z]+", "");
-        		     System.out.println(modifiedRecid);
+        		    System.out.println(modifiedRecid);
+        		   
         			preparedStatement.setString(1, modifiedRecid); // Set the value for column1
         			preparedStatement.execute();
         			
