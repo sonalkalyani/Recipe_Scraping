@@ -62,7 +62,7 @@ public class LFV_PartialVegan {
 				//reading eliminateList from excel
 				
 				String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
-				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
+				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 1);
 				
 				//System.out.println("eliminate items " + eliminateList );
 				
