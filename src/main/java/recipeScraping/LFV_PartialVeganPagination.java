@@ -1,12 +1,10 @@
 package recipeScraping;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,10 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
-import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
 
 public class LFV_PartialVeganPagination {
 
@@ -44,11 +38,19 @@ public class LFV_PartialVeganPagination {
 
 	// MAIN METHOD
 	public static void main(String[] args) throws Exception {
-		System.out.println(recipesList());
+		System.out.println(recipesList()); //Result set of recipes with elimiated criteria met, avoid recipes met, Add recipes met
+		//recipes with Allerigies criteria met
+		//Recipes with Optional LFC drinks met
+		
+		
 	}
 
 	public static ArrayList<recipeObj1> recipesList() throws IOException {
+		
+		
 		int totalRecipes = 0;
+		
+		
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 
@@ -78,16 +80,20 @@ public class LFV_PartialVeganPagination {
 			
 			for (int page = 1; page <= pageCount; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
+				System.out.println("Beginning count of totalRecipes    " + totalRecipes);
+				
+				
 				String url = url_part1 + alphabet + url_part2 + page;
 				Document currentDoc = Jsoup.connect(url).get();
 				Elements recipesList = currentDoc.select(".rcc_recipecard");
 				// STORING RECIPE IDS AND NAMES
-
+				
 				ids.clear();
 				links.clear();
 				
 				for (Element rc : recipesList) {
 					rc_name = (rc.select("div.rcc_recipecard span.rcc_recipename a").text());
+					System.out.println("Name is                           --------->"+     rc_name);
 					String recipeId = rc.select("div.rcc_recipecard").attr("id");
 					ids.add(recipeId.substring(3));
 					
@@ -101,7 +107,7 @@ public class LFV_PartialVeganPagination {
 
 				int i = 0;
 				// loop through the links to access the data for each recipe in a single page
-				for (i = 0; i < links.size() - 1; i++) {
+				for (i = 0; i <= links.size() - 1; i++) {
 					String link = links.get(i);
 					Document r_page = null;
 					try {
@@ -173,8 +179,9 @@ public class LFV_PartialVeganPagination {
 					// Checking if recipe is from the 'Avoid list'
 					try {
 						if (recipesToBeAvoided(prepMethod)) {
+							//System.out.println("Recipe Name " + rc_name);
 							System.out.println("Avoiding this recipe......................");
-							System.out.println("Recipe Name " + rc_name);
+							
 							prepMethod.clear();
 							continue;
 						}
@@ -265,7 +272,7 @@ public class LFV_PartialVeganPagination {
 					String ingredientsFinal = String.join(",", ingredients);
 					String tagsFinal = String.join(",", tags);
 					totalRecipes++;
-
+					
 					recipes.add(new recipeObj1(ids.get(i), name, recipeCategory, foodCategory, ingredientsFinal,
 							prepTime, cookTime, tagsFinal, numServings, cuisineCategoryFinal, description,
 							prepMethodStr, nutrientsString, link));
@@ -317,16 +324,34 @@ public class LFV_PartialVeganPagination {
 
 	// Recipes to avoid
 	public static boolean recipesToBeAvoided(ArrayList<String> prepMethod) {
-		List<String> recipesToAvoidList = Arrays.asList(new String[] { "fried food", "Fried Food", "deep-fry",
-				"Deep-Fried", "Deep Fry", "microwave", "Microwave", "MICROWAVE", "ready meals", "Ready Meal",
-				"readymade", "chips", "Chips", "crackers", "Crackers" });
+		ArrayList<String> recipesToAvoidList = new ArrayList<String>();
+		recipesToAvoidList.add("fried food");
+		recipesToAvoidList.add("Fried Food");
+		recipesToAvoidList.add("deep-fry");
+		recipesToAvoidList.add("Deep-Fried");
+		recipesToAvoidList.add("Deep Fry");
+		recipesToAvoidList.add("microwave");
+		recipesToAvoidList.add("Microwave");
+		recipesToAvoidList.add("MICROWAVE");
+		recipesToAvoidList.add("ready meals");
+		recipesToAvoidList.add("Ready Meal");
+		recipesToAvoidList.add("readymade");
+		recipesToAvoidList.add("chips");
+		recipesToAvoidList.add("Chips");
+		recipesToAvoidList.add("crackers");
+		recipesToAvoidList.add("Crackers");
+		
 		for (String str : prepMethod) {
 			for (String str2 : recipesToAvoidList) {
-				if (str.contains(str2)) {
-					System.out.println("String matches from prepMethod           " + str);
-					System.out.println("String matches from fried food list           " + str2);
+				//System.out.println("String from prepMethod           " + str);
+				//System.out.println("String  from fried food list           " + str2);
+			
+				if (str.indexOf(str2) != -1) {
+					System.out.println("string match           " );
 					return true;
 				}
+				
+				//ignore Case
 			}
 		}
 		return false;
@@ -337,8 +362,8 @@ public class LFV_PartialVeganPagination {
 		for (String ingredient : Ingredients) {
 			for (String AddItem : AddToList) {
 				if (AddItem.contains(ingredient)) {
-					System.out.println("AddItem ----->             " + AddItem);
-					System.out.println("ingredient ----->             " + ingredient);
+					//System.out.println("AddItem ----->             " + AddItem);
+					//System.out.println("ingredient ----->             " + ingredient);
 					return true;
 				}
 			}

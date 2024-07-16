@@ -1,2 +1,3 @@
-2024-07-15 13:24:29,196 INFO logger.Log [main] Browser Launching
-2024-07-15 13:24:41,425 INFO logger.Log [main] Launching the URL
+2024-07-16 09:30:00,738 INFO logger.Log [main] Browser Launching
+2024-07-16 09:30:02,955 INFO logger.Log [main] Launching the URL
+2024-07-16 09:30:02,970 INFO logger.Log [main] I am inside extractRecipe method
