@@ -17,7 +17,7 @@ import org.jsoup.select.Elements;
 public class LFV_PartialVeganPagination {
 
 	// Read partial vegan list
-	// A to Z, 1 to last page
+	// A to A, 1 to last page
 	// Checking ingd against Partial vegan list - if found eliminate it
 	// checking Avoid recipes
 	// checking Add list
@@ -70,7 +70,7 @@ public class LFV_PartialVeganPagination {
 			//pageCount = ; // REMOVE IT
 			
 			
-			for (int page = 5; page <= pageCount; page++) {
+			for (int page = 1; page <= pageCount; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
 				
 				String url = url_part1 + alphabet + url_part2 + page;
