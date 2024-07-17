@@ -236,7 +236,8 @@ public class LFV_PartialVeganPagination {
 					numServings = "";
 					String servings = r_page.select("#ctl00_cntrightpanel_lblServes").text();
 					if (servings != null)
-						numServings = servings.substring(servings.indexOf("M"));
+						//numServings = servings.substring(servings.indexOf("M"));
+						numServings = servings;
 					else
 					{
 						numServings = "";
