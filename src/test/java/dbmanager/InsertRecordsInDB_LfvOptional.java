@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import recipeScraping.LFV_OptionalRecipes;
 import recipeScraping.recipeObjDrinks;
 
-public class Test {
+public class InsertRecordsInDB_LfvOptional {
 
     // Example method to insert data into database
     public void InsertData(ArrayList<recipeObjDrinks> obj, String dburl, String user, String password) {
@@ -41,7 +41,7 @@ public class Test {
             }
 
             conn.commit(); // Commit the transaction after all insertions are done
-            System.out.println("Batch insertion completed successfully.");
+            System.out.println("Data inserted completed successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -72,7 +72,7 @@ public class Test {
         String user = "postgres";
         String password = "demo123";
 
-        Test dbTest = new Test();
+        InsertRecordsInDB_LfvOptional dbTest = new InsertRecordsInDB_LfvOptional();
         dbTest.InsertData(obj, dburl, user, password);
     }
 }
