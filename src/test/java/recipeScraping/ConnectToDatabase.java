@@ -14,7 +14,7 @@ public class ConnectToDatabase {
 	
 	private Connection conn;
 
-	public void ConnectToDb() {
+	public Connection ConnectToDb() {
 		try  {
 			conn = DriverManager.getConnection(dburl, user, password);
 			if (conn != null) {
@@ -30,6 +30,7 @@ public class ConnectToDatabase {
 			System.out.println("SQLState: " + e.getSQLState());
 			System.out.println("VendorError: " + e.getErrorCode());
 		}
+		return conn;
 	}
 	
 	public static void main(String args[]) {

@@ -2,77 +2,97 @@ package dbmanager;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import recipeScraping.LFV_OptionalRecipes;
-import recipeScraping.recipeObjDrinks;
+import recipeScraping.ConnectToDatabase;
+import recipeScraping.LFV_PartialVeganPagination;
+import recipeScraping.recipeObj1;
 
-public class Test {
-
-    // Example method to insert data into database
-    public void InsertData(ArrayList<recipeObjDrinks> obj, String dburl, String user, String password) {
-        String sql = "INSERT INTO lfv_optionalrecipes (recipe_id, recipe_name, ingredients, prep_method, URL) VALUES (?, ?, ?, ?, ?)";
-
-        Connection conn = null;
-        PreparedStatement statement = null;
-
+public class Test{
+	
+	// Method to extract recipes
+	public ArrayList<recipeObj1> extractRecipes() throws InterruptedException, IOException {
+	
+	LFV_PartialVeganPagination lfvpartialvegan = new LFV_PartialVeganPagination();
+    
+    ArrayList<recipeObj1> obj1 = new ArrayList<>();
+     obj1 = lfvpartialvegan.recipesList();
+   
+   throw new InterruptedException("Read timeout occurred during extraction");
+	}
+    
+    //Method to insert recipes into database
+    public void InsertToLFVPartialVegan(ArrayList<recipeObj1> recipes) throws IOException {
+    	ConnectToDatabase dbconnection = new ConnectToDatabase();
+    	Connection conn;
+    	String sql = "INSERT INTO lfv_partialvegan (recipe_id, recipe_name, recipe_category, food_category, ingredients, prep_method, "
+                + "prep_time, cook_time, tags, num_servings, cuisine_category, description, nutrients, URL) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            conn = DriverManager.getConnection(dburl, user, password);
-            conn.setAutoCommit(false); // Disable auto-commit for batch processing
+        	conn = dbconnection.ConnectToDb();	
+        	PreparedStatement statement = conn.prepareStatement(sql);
+        	conn.setAutoCommit(false);	
 
-            statement = conn.prepareStatement(sql);
+        	for (recipeObj1 lfvpartialvegan : recipes) {
+        		try {	
+        			statement.setString(1, lfvpartialvegan.getID());
+        			statement.setString(2, lfvpartialvegan.getName());
+        			statement.setString(3, lfvpartialvegan.getRecipeCategory());
+        			statement.setString(4, lfvpartialvegan.getFoodCategory());
+        			statement.setString(5, lfvpartialvegan.getIngredients());
+        			statement.setString(6, lfvpartialvegan.getPrepMethod());
+        			statement.setInt(7, lfvpartialvegan.getPrepTime());
+        			statement.setInt(8, lfvpartialvegan.getCookTime());
+        			statement.setString(9, lfvpartialvegan.getTags());
+        			statement.setString(10, lfvpartialvegan.getNumServings());
+        			statement.setString(11, lfvpartialvegan.getCuisineCategory());
+        			statement.setString(12, lfvpartialvegan.getDescription());
+        			statement.setString(13, lfvpartialvegan.getNutrients());
+        			statement.setString(14, lfvpartialvegan.getURL());
+        			
+        			statement.executeUpdate();
+        			conn.commit();
+        			
+        		}
+        		
+        			catch (SQLException e) {
+        			
+        		
+        				if (e.getSQLState().equals(lfvpartialvegan.getID())) { // Check for duplicate key violation
 
-            for (recipeObjDrinks optrec : obj) {
-                try {
-                    statement.setString(1, optrec.getID()); // Assuming ID is a String
-                    statement.setString(2, optrec.getName());
-                    statement.setString(3, optrec.getIngredients());
-                    statement.setString(4, optrec.getPrepMethod());
-                    statement.setString(5, optrec.getlink());
-
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    // Handle specific SQL exceptions as needed
-                    e.printStackTrace();
-                }
-            }
-
-            conn.commit(); // Commit the transaction after all insertions are done
-            System.out.println("Batch insertion completed successfully.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                if (conn != null) {
-                    conn.rollback(); // Rollback in case of exception
-                    System.out.println("Transaction rolled back.");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        					System.out.println("Duplicate key error for recipe_id: " + lfvpartialvegan.getID());
+        				}
+        				else {
+        					throw e;
+        				}
+        			}
+        		}
+        		System.out.println("Data Inserted Successfully");
+        		
+        	}
+        	catch (Exception e) {
+        		e.printStackTrace();
+        	}
     }
 
-    public static void main(String[] args) throws IOException {
-        ArrayList<recipeObjDrinks> obj = LFV_OptionalRecipes.optionalRecipesList();
-        String dburl = "jdbc:postgresql://localhost:5433/postgres";
-        String user = "postgres";
-        String password = "demo123";
 
-        Test dbTest = new Test();
-        dbTest.InsertData(obj, dburl, user, password);
+    public static void main(String[] args) throws IOException, SQLException {
+    	
+
+    	Test recipeinsert = new Test();
+    	try {
+    		ArrayList<recipeObj1> recipes = recipeinsert.extractRecipes();
+    		recipeinsert.InsertToLFVPartialVegan(recipes);
+    		
+    	}
+    	catch (InterruptedException e) {
+    		System.out.println("Read timeout occurred during recipe extraction: " + e.getMessage());
+            // Proceed with inserting whatever recipes were extracted before the timeout
+    		ArrayList<recipeObj1> recipes = new ArrayList<>();
+    		recipeinsert.InsertToLFVPartialVegan(recipes);
+    		
+		}
     }
 }
