@@ -56,6 +56,7 @@ public class LCHF_Recipes {
 		String baseUrl = sampleUrl + "1";
 		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
 		int pageCount = 0;
+		int ExtractedRecipesCount = 0;
 		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
 		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
 			System.out.println("At page ####  :  " + alphabet);
@@ -68,7 +69,7 @@ public class LCHF_Recipes {
 			System.out.println("number of pages: " + pageList.last().text());
 
 			String rc_name ="";
-			pageCount = 5; // REMOVE IT
+			//pageCount = 5; // REMOVE IT
 			
 
 			for (int page = 1; page <= pageCount; page++) {
@@ -113,12 +114,18 @@ public class LCHF_Recipes {
 
 					Element ingredients_div = r_page.select("div#rcpinglist").first();
 					assert ingredients_div != null;
-					//Elements ingredients_qty = ingredients_div.select("[itemprop=recipeIngredient]");
-					Elements ingredients_links = ingredients_div.select("a");
-					for (Element e : ingredients_links) {
-						ingredients.add(e.text());
-						//System.out.println("ingredients list :#####"+ingredients);
+					
+					if (ingredients_div != null) {
+							Elements ingredients_qty = ingredients_div.select("[itemprop=recipeIngredient]");
+						
+							Elements ingredients_links = ingredients_div.select("a");
+						for (Element e : ingredients_links) {
+							ingredients.add(e.text());
+							//System.out.println("ingredients list :#####"+ingredients);
+						}
 					}
+					else
+						System.out.println("This recipe has no ingredients");
 
 					// CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
 					try {
@@ -160,11 +167,15 @@ public class LCHF_Recipes {
 					Elements prepMethod_links = null;
 
 					prepMethod_div = r_page.select("#recipe_small_steps").first();
-					prepMethod_links = prepMethod_div.select("[itemprop = text]");
-					for (Element e : prepMethod_links) {
-						prepMethod.add(e.text());
-						//System.out.println(e.text());
+					if (prepMethod_div !=null) {
+						prepMethod_links = prepMethod_div.select("[itemprop = text]");
+						for (Element e : prepMethod_links) {
+							prepMethod.add(e.text());
+							//System.out.println(e.text());
+						}
 					}
+					else
+						System.out.println("This recipe has no prep method");
 					
 					// Checking if recipe is from the 'Avoid list'
 					try {
@@ -185,9 +196,13 @@ public class LCHF_Recipes {
 					// TAGS
 					tags.clear();
 					Elements tagsList = r_page.select("div.tags a span");
-					for (Element ele : tagsList) {
-						tags.add(ele.text());
+					if (tagsList !=null) {
+						for (Element ele : tagsList) {
+							tags.add(ele.text());
+						}
 					}
+					else
+						System.out.println("This recipe has no tags");
 					
 					// RECIPE CATEGORY
 					recipeCategory = "";
@@ -213,8 +228,15 @@ public class LCHF_Recipes {
 					
 					// NUMBER OF SERVINGS
 					numServings = "";
-					String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
-					numServings = str;
+					String servings = r_page.select("#ctl00_cntrightpanel_lblServes").text();
+					if (servings != null)
+						numServings = servings.substring(servings.indexOf("M"));
+					else
+					{
+						numServings = "";
+						System.out.println("This recipe has no serving size");
+					}
+					
 					cuisineCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 1);
 					cuisineCategory.clear();
 					for (String tag : tags) {
@@ -230,8 +252,14 @@ public class LCHF_Recipes {
 
 					// DESCRIPTION
 					Element descriptionEle = r_page.select("[name=description]").first();
-					description = descriptionEle.attr("content");
-
+					if (descriptionEle !=null)
+						description = descriptionEle.attr("content");
+					else
+					{
+						description="";
+						System.out.println("This recipe has no description");
+					}
+					
 					// NUTRIENTS
 					Element nutrientsList = r_page.selectFirst("table#rcpnutrients");
 					String nutrientsString = "";
@@ -243,6 +271,11 @@ public class LCHF_Recipes {
 								nutrientsString = nutrientsString + " " + cell.text().trim() + " ";
 							}
 						}
+					}
+					else
+					{
+						nutrientsString = "";
+						System.out.println("This recipe has no nutrients");
 					}
 					
 					// Check if the recipe contains at least one item from the ADD list, otherwise
@@ -264,19 +297,19 @@ public class LCHF_Recipes {
 
 					String ingredientsFinal = String.join(",", ingredients);
 					String tagsFinal = String.join(",", tags);
-					totalRecipes++;
-
+					ExtractedRecipesCount++;
+					
+					System.out.println("Total number of ExtractedRecipesCount               " + ExtractedRecipesCount);
+					
 					recipes.add(new recipeObjLCHF(ids.get(i), name, recipeCategory, foodCategory, ingredientsFinal,
 							prepTime, cookTime, tagsFinal, numServings, cuisineCategoryFinal, description,
 							prepMethodStr, nutrientsString, link));
 
-				
-				
 			}
 		}
 		
 	}
-		System.out.println("Total number of recipes    " + totalRecipes);
+		System.out.println("Returning Recipes list >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		return recipes;
 		
 
@@ -311,13 +344,12 @@ public class LCHF_Recipes {
 			List<String> recipesToAvoidList = Arrays.asList(new String[] { "cheese", "bread", "sausage", "biscuits", "cereal", "canned", "chips", "instant", "ready made" });
 			for (String str : Ingredients) {
 				for (String str2 : recipesToAvoidList) {
-					if (str.contains(str2)) {
-						System.out.println("String matches from Ingredients           " + str);
-						System.out.println("String matches from ToAvoidList           " + str2);
+
+					if  (str.toLowerCase().trim().contains(str2.toLowerCase().trim())) 
 						return true;
 					}
 				}
-			}
+			
 			return false;
 		}
 		
@@ -339,14 +371,28 @@ public class LCHF_Recipes {
 		public static boolean recipesGoodToAdd(ArrayList<String> Ingredients) {
 			for (String ingredient : Ingredients) {
 				for (String AddItem : AddToList) {
-					if (AddItem.contains(ingredient)) {
-						System.out.println("AddItem ----->             " + AddItem);
-						System.out.println("ingredient ----->             " + ingredient);
-						return true;
-					}
+					if (
+							ingredient.toLowerCase().trim().contains((AddItem.toLowerCase().trim()))
+							) {
+							return true;
+						}
+						else
+							continue;
 				}
 			}
 			return false;
+		}
+		
+		// Return arraylist of extracted recipes
+		public ArrayList<recipeObjLCHF> getRecipes() {
+			return recipes;
+		}
+		
+		// Print recipes
+		public void printRecipes() {
+			for (recipeObjLCHF r : recipes) {
+				System.out.println(r);
+			}
 		}
 		
 }
