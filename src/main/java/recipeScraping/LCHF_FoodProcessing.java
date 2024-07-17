@@ -44,11 +44,13 @@ public class LCHF_FoodProcessing {
 			System.out.println("RecipesCount          ->           "  + RecipesCount);
 			LCHF_Food_Cat_List.add(LCHF_List.get(i));
 		}
+		System.out.println("Total recpipes for allowed food processing                " + RecipesCount);
 		return LCHF_Food_Cat_List;
 	}
 
 	// Make sure the final recipes contain atleast one item from this list
 	public static boolean hasFoodCategories(String prepMethodStr) {
+		
 		for (String foodCat : CategoriesToKeep) {
 			if (prepMethodStr.contains(foodCat)) {
 				System.out.println("Category ----->             " + foodCat);
