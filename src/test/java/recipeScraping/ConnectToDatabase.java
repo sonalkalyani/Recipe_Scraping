@@ -34,8 +34,8 @@ public class ConnectToDatabase {
 	
 	public static void main(String args[]) {
 		
-		ConnectToDatabase cdb = new ConnectToDatabase();
-		cdb.ConnectToDb();
+		ConnectToDatabase connectdb = new ConnectToDatabase();
+		connectdb.ConnectToDb();
 		
 	}
 

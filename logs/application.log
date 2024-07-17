@@ -1,2 +1,2 @@
-2024-07-14 18:46:51,239 INFO logger.Log [main] Browser Launching
-2024-07-14 18:46:53,420 INFO logger.Log [main] Launching the URL
+2024-07-16 22:13:03,044 DEBUG org.apache.poi.openxml4j.opc.PackageRelationshipCollection [main] Parsing relationship: /xl/_rels/workbook.xml.rels
+2024-07-16 22:13:03,057 DEBUG org.apache.poi.openxml4j.opc.PackageRelationshipCollection [main] Parsing relationship: /_rels/.rels

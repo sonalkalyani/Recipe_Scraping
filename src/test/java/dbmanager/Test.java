@@ -21,19 +21,25 @@ import recipeScraping.LFV_PartialVeganPagination;
 import recipeScraping.recipeObj1;
 import recipeScraping.recipeObjDrinks;
 
-public class InsertRecordsInDB_test {
-	LFV_OptionalRecipes optrec = new LFV_OptionalRecipes();
+public class Test {
+
+//	private String dburl = "jdbc:postgresql://localhost:5433/postgres";
+//	private String user = "postgres";
+//	private String password = "demo123";
+	//LFV_OptionalRecipes optrec = new LFV_OptionalRecipes();
 	ConnectToDatabase dbconnection = new ConnectToDatabase();
 	Connection conn;
 
 	public void InsertData() throws IOException, SQLException {
 
+		
 		ArrayList<recipeObjDrinks> obj = LFV_OptionalRecipes.optionalRecipesList();
 
 		String sql = "INSERT INTO lfv_optionalrecipes (recipe_id, recipe_name, ingredients,prep_method, URL) VALUES (?, ?, ?, ?, ?)";
-		try (PreparedStatement statement = conn.prepareStatement(sql)){
-			  
-			dbconnection.ConnectToDb();
+		try {
+				dbconnection.ConnectToDb();
+				PreparedStatement statement = conn.prepareStatement(sql); 
+
 
 			for (recipeObjDrinks optrec : obj) {
 
@@ -54,9 +60,10 @@ public class InsertRecordsInDB_test {
 //            statement.setString(12, recipe.getPrepMethod());
 //            statement.setString(13, recipe.getNutrients());
 //            statement.setString(14, recipe.getURL());
-					statement.executeUpdate();
+					statement.executeUpdate();;
 					System.out.println("Data Inserted Successfully");
 					conn.commit();
+					
 
 				}
 
@@ -70,7 +77,12 @@ public class InsertRecordsInDB_test {
 						throw e;
 					}
 				}
+				
 			}
+			
+		}
+		
+		finally {
 			
 		}
 	}

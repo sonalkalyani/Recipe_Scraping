@@ -55,30 +55,30 @@ public class CommonUtils {
 
 	}
 
-//	public void hasRecipeCategory(ArrayList<String> tags) {
-//		ArrayList<String> recipeCategoryXL = new ArrayList<>();
-//	    String recipeCategory = "";
-//
-//		// EXTRACT FROM TAG OR RECIPE NAME
-//		// HARD CODED
-//		recipeCategoryXL.add("Breakfast");
-//		recipeCategoryXL.add("Lunch");
-//		recipeCategoryXL.add("Snack");
-//		recipeCategoryXL.add("Dinner");
-//
-//		for (String tag : tags) {
-//			for (String tag2 : recipeCategoryXL) {
-//				if (tag.contains(tag2)) {
-//					recipeCategory = recipeCategory + tag;
-//					System.out.println("Recipe category ----------> " + tag);
-//					break;
-//				}
-//			}
-//		}
-//
-//	
-//
-//	}
+	public void hasRecipeCategory(ArrayList<String> tags) {
+		ArrayList<String> recipeCategoryXL = new ArrayList<>();
+	    String recipeCategory = "";
+
+		// EXTRACT FROM TAG OR RECIPE NAME
+		// HARD CODED
+		recipeCategoryXL.add("Breakfast");
+		recipeCategoryXL.add("Lunch");
+		recipeCategoryXL.add("Snack");
+		recipeCategoryXL.add("Dinner");
+
+		for (String tag : tags) {
+			for (String tag2 : recipeCategoryXL) {
+				if (tag.contains(tag2)) {
+					recipeCategory = recipeCategory + tag;
+					System.out.println("Recipe category ----------> " + tag);
+					break;
+				}
+			}
+		}
+
+	
+
+	}
 
 	public boolean eliminatedItemsList(ArrayList<String> ingredients) throws IOException {
 		// HARD CODED
