@@ -1,19 +1,16 @@
-package dbtests;
+package recipeScraping;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dbmanager.ConnectToDatabase;
-import recipeScraping.LFV_OptionalRecipes;
-import recipeScraping.recipeObjDrinks;
 
 public class InsertRecordsInDB_LfvOptional {
 
-	LFV_OptionalRecipes optrecipes = new LFV_OptionalRecipes();
+	LFV_OptionalRecipesNoSugar optrecipes = new LFV_OptionalRecipesNoSugar();
 	ConnectToDatabase dbconnection = new ConnectToDatabase();
 	Connection conn;
 
@@ -25,7 +22,7 @@ public class InsertRecordsInDB_LfvOptional {
 		try {
 
 			PreparedStatement statement = null;
-			ArrayList<recipeObjDrinks> obj = LFV_OptionalRecipes.optionalRecipesList();
+			ArrayList<recipeObjDrinks> obj = LFV_OptionalRecipesNoSugar.optionalRecipesList();
 			conn.setAutoCommit(false);
 			statement = conn.prepareStatement(sql);
 
