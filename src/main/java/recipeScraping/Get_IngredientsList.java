@@ -86,13 +86,13 @@ public class Get_IngredientsList {
 				if (cell != null && cell.getCellType() == CellType.STRING) {
 					eliminateList.add(cell.getStringCellValue());
 				}
+
 			}
+
 			rowIndex++;
 		}
-
 		workbook.close();
 		inputStream.close();
-
 		return eliminateList;
 	}
 
