@@ -7,15 +7,14 @@ import org.slf4j.Logger;
 
 public class ConnectToDatabase {
 
-	// JDBC URL, username and password of PostgreSQL server
 	private String dburl = "jdbc:postgresql://localhost:5433/postgres";
 	String user = "postgres";
 	String password = "demo123";
-	
+
 	private Connection conn;
 
 	public Connection ConnectToDb() {
-		try  {
+		try {
 			conn = DriverManager.getConnection(dburl, user, password);
 			if (conn != null) {
 
@@ -32,12 +31,12 @@ public class ConnectToDatabase {
 		}
 		return conn;
 	}
-	
+
 	public static void main(String args[]) {
-		
+
 		ConnectToDatabase connectdb = new ConnectToDatabase();
 		connectdb.ConnectToDb();
-		
+
 	}
 
 }
