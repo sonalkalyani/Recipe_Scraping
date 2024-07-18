@@ -1,4 +1,4 @@
-package dbmanager;
+package dbtests;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,8 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dbmanager.ConnectToDatabase;
 import recipeScraping.Allergies;
-import recipeScraping.ConnectToDatabase;
 import recipeScraping.LFV_PartialVeganPagination;
 import recipeScraping.recipeObj1;
 import recipeScraping.recipeObjDrinks;
