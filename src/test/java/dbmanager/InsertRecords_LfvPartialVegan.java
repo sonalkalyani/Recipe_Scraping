@@ -52,8 +52,8 @@ public class InsertRecords_LfvPartialVegan {
 		
 			catch (SQLException e) {
 			
-		
-				if (e.getSQLState().equals(lfvpartialvegan.getID())) { // Check for duplicate key violation
+				// Check for duplicate key violation
+				if (e.getSQLState().equals(lfvpartialvegan.getID())) { 
 
 					System.out.println("Duplicate key error for recipe_id: " + lfvpartialvegan.getID());
 				}
