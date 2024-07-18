@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class OptionalRecipes {
+public class LFV_OptionalRecipesNoSugar {
 	private static ArrayList<String> eliminateList = new ArrayList<>();
 	private static ArrayList<recipeObjDrinks> recipesDrink = new ArrayList<>();
 

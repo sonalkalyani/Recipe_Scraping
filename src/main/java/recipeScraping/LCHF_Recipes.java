@@ -49,7 +49,7 @@ public class LCHF_Recipes {
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 		
-		String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList_LCHF(fileName, 0);
 		
 		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
