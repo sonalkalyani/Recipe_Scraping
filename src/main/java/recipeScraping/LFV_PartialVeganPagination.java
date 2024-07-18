@@ -36,10 +36,11 @@ public class LFV_PartialVeganPagination {
 	static String description;
 	static ArrayList<String> nutrients = new ArrayList<>();
 	static int totalRecipes = 0;
-	
+
 	// MAIN METHOD
 	public static void main(String[] args) throws Exception {
-		recipesList(); //Result set of recipes with elimiated criteria met, avoid recipes met, Add recipes met
+		recipesList(); // Result set of recipes with elimiated criteria met, avoid recipes met, Add
+						// recipes met
 	}
 
 	public static ArrayList<recipeObj1> recipesList() throws IOException {
@@ -47,17 +48,16 @@ public class LFV_PartialVeganPagination {
 		ArrayList<String> ids = new ArrayList<>();
 
 		// Read partial vegan
-		String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir") + "\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList(fileName, 1);
 
-		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=X&pageindex=";
 		String baseUrl = sampleUrl + "1";
-		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
+		Document document = Jsoup.connect(baseUrl).timeout(8000).get();
 		int pageCount = 0;
 		int ExtractedRecipesCount = 0;
-		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
-		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
-			System.out.println("At page ####  :  " + alphabet);
+		for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
+			// System.out.println("At page #### : " + alphabet);
 			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
 			String url_part2 = "&pageindex=";
 			String url_AZ = url_part1 + alphabet + url_part2 + "1";
@@ -66,27 +66,24 @@ public class LFV_PartialVeganPagination {
 			pageCount = Integer.parseInt(pageList.last().text());
 			System.out.println("number of pages: " + pageList.last().text());
 
-			String rc_name ="";
-			//pageCount = ; // REMOVE IT
-			
-			
+			String rc_name = "";
 			for (int page = 1; page <= pageCount; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
-				
+
 				String url = url_part1 + alphabet + url_part2 + page;
 				Document currentDoc = Jsoup.connect(url).get();
 				Elements recipesList = currentDoc.select(".rcc_recipecard");
 				// STORING RECIPE IDS AND NAMES
-				
+
 				ids.clear();
 				links.clear();
-				
+
 				for (Element rc : recipesList) {
 					rc_name = (rc.select("div.rcc_recipecard span.rcc_recipename a").text());
-					System.out.println("Name is                           --------->"+     rc_name);
+					// System.out.println("Name is --------->"+ rc_name);
 					String recipeId = rc.select("div.rcc_recipecard").attr("id");
 					ids.add(recipeId.substring(3));
-					
+
 				}
 				// RECIPE LINKS
 				Elements linksList = null;
@@ -116,37 +113,23 @@ public class LFV_PartialVeganPagination {
 					if (ingredients_div != null) {
 						Elements ingredients_qty = ingredients_div.select("[itemprop=recipeIngredient]");
 						Elements ingredients_links = ingredients_div.select("a");
-						
-						
+
 						for (Element e : ingredients_links) {
 							ingredients.add(e.text());
 						}
-					}
-					else
-						System.out.println("This recipe has no ingredients");
-					
-					
-//					for (Element e : ingredients_qty) {
-//						ingredients.add(e.text());
-//					}
+					} else
 
-					//System.out.println("INGER                           " + ingredients);					
-					// CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
-					
-				
-					try {
+						try {
 
-						if (hasEliminatedItems(ingredients)) { // System.out.println(" has elminated is TRUE");
-							{
-								continue;
+							if (hasEliminatedItems(ingredients)) {
+								{
+									continue;
+								}
 							}
+						} catch (Exception e1) {
+
+							e1.printStackTrace();
 						}
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					
-					
 
 					String name = "";
 					// RECIPE NAME
@@ -170,50 +153,46 @@ public class LFV_PartialVeganPagination {
 					String prepMethodStr = "";
 					ArrayList<String> prepMethod = new ArrayList<>();
 					prepMethod.clear();
-					
+
 					Element prepMethod_div = null;
 					Elements prepMethod_links = null;
 
 					prepMethod_div = r_page.select("#recipe_small_steps").first();
-					if (prepMethod_div !=null) {
+					if (prepMethod_div != null) {
 						prepMethod_links = prepMethod_div.select("[itemprop = text]");
 						for (Element e : prepMethod_links) {
 							prepMethod.add(e.text());
 						}
-					}
-					else
-						System.out.println("This recipe has no prep method");
-					
-						
+					} else
+						// System.out.println("This recipe has no prep method");
 
-					// Checking if recipe is from the 'Avoid list'
-					try {
-						if (recipesToBeAvoided(prepMethod)) {
-							//System.out.println("Recipe Name " + rc_name);
-							System.out.println("Avoiding this recipe......................");
-							prepMethod.clear();
-							continue;
+						// Checking if recipe is from the 'Avoid list'
+						try {
+							if (recipesToBeAvoided(prepMethod)) {
+								// System.out.println("Recipe Name " + rc_name);
+								// System.out.println("Avoiding this recipe......................");
+								prepMethod.clear();
+								continue;
+							}
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 
 					prepMethodStr = String.join(",", prepMethod);
 
 					// TAGS
 					tags.clear();
 					Elements tagsList = r_page.select("div.tags a span");
-					if (tagsList !=null) {
+					if (tagsList != null) {
 						for (Element ele : tagsList) {
 							tags.add(ele.text());
-							}
-					}
-					else
-						System.out.println("This recipe has no tags");
+						}
+					} else
+						// System.out.println("This recipe has no tags");
 
-					// RECIPE CATEGORY
-					recipeCategory = "";
+						// RECIPE CATEGORY
+						recipeCategory = "";
 					recipeCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 2);
 					for (String tag : tags) {
 						if (recipeCategoryXL.contains(tag)) {
@@ -233,18 +212,21 @@ public class LFV_PartialVeganPagination {
 						}
 					}
 					// NUMBER OF SERVINGS
+
+					String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
+					if (str != null)
+						numServings = str;
 					numServings = "";
 					String servings = r_page.select("#ctl00_cntrightpanel_lblServes").text();
 					if (servings != null)
-						//numServings = servings.substring(servings.indexOf("M"));
+						// numServings = servings.substring(servings.indexOf("M"));
 						numServings = servings;
-					else
-					{
+
+					else {
 						numServings = "";
 						System.out.println("This recipe has no serving size");
 					}
-					
-					
+
 					cuisineCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 1);
 					cuisineCategory.clear();
 					for (String tag : tags) {
@@ -260,15 +242,13 @@ public class LFV_PartialVeganPagination {
 
 					// DESCRIPTION
 					Element descriptionEle = r_page.select("[name=description]").first();
-					if (descriptionEle !=null)
+					if (descriptionEle != null)
 						description = descriptionEle.attr("content");
-					else
-					{
-						description="";
-						System.out.println("This recipe has no description");
+					else {
+						description = "";
+						// System.out.println("This recipe has no description");
 					}
 
-					
 					// NUTRIENTS
 					Element nutrientsList = r_page.selectFirst("table#rcpnutrients");
 					String nutrientsString = "";
@@ -280,17 +260,15 @@ public class LFV_PartialVeganPagination {
 								nutrientsString = nutrientsString + " " + cell.text().trim() + " ";
 							}
 						}
-					}
-					else
-					{
+					} else {
 						nutrientsString = "";
-						System.out.println("This recipe has no nutrients");
+						// System.out.println("This recipe has no nutrients");
 					}
-					
+
 					// Check if the recipe contains at least one item from the ADD list, otherwise
 					// ignore it
 					AddToList = Get_IngredientsList.get_EliminateList(fileName, 2);
-					
+
 					try {
 
 						if (recipesGoodToAdd(ingredients) == false) // None of the ingredients exist in the Add list
@@ -303,13 +281,12 @@ public class LFV_PartialVeganPagination {
 						e1.printStackTrace();
 					}
 
-					
 					String ingredientsFinal = String.join(",", ingredients);
 					String tagsFinal = String.join(",", tags);
 					ExtractedRecipesCount++;
-					
+
 					System.out.println("Total number of ExtractedRecipesCount               " + ExtractedRecipesCount);
-					
+
 					recipes.add(new recipeObj1(ids.get(i), name, recipeCategory, foodCategory, ingredientsFinal,
 							prepTime, cookTime, tagsFinal, numServings, cuisineCategoryFinal, description,
 							prepMethodStr, nutrientsString, link));
@@ -348,7 +325,7 @@ public class LFV_PartialVeganPagination {
 	}
 
 	// Return arraylist of extracted recipes
-	public ArrayList<recipeObj1> getRecipes() {
+	public static ArrayList<recipeObj1> getRecipes() {
 		return recipes;
 	}
 
@@ -373,14 +350,14 @@ public class LFV_PartialVeganPagination {
 		recipesToAvoidList.add("readymade");
 		recipesToAvoidList.add("chips");
 		recipesToAvoidList.add("crackers");
-		
+
 		for (String str : prepMethod) {
 			for (String str2 : recipesToAvoidList) {
-			
-				if  (str.toLowerCase().trim().contains(str2.toLowerCase().trim())) 
+
+				if (str.toLowerCase().trim().contains(str2.toLowerCase().trim()))
 					return true;
-				}
-			}		
+			}
+		}
 		return false;
 	}
 
@@ -388,12 +365,9 @@ public class LFV_PartialVeganPagination {
 	public static boolean recipesGoodToAdd(ArrayList<String> Ingredients) {
 		for (String ingredient : Ingredients) {
 			for (String AddItem : AddToList) {
-				if (
-					ingredient.toLowerCase().trim().contains((AddItem.toLowerCase().trim()))
-					) {
+				if (ingredient.toLowerCase().trim().contains((AddItem.toLowerCase().trim()))) {
 					return true;
-				}
-				else
+				} else
 					continue;
 			}
 		}

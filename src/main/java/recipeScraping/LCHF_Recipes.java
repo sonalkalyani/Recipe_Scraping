@@ -1,7 +1,6 @@
 package recipeScraping;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,12 +14,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
-import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
-
-
 
 public class LCHF_Recipes {
 
@@ -37,27 +30,26 @@ public class LCHF_Recipes {
 	static Set<String> cuisineCategory = new HashSet<String>();
 	static String description;
 	static ArrayList<String> nutrients = new ArrayList<>();
-	
+
 	public static void main(String[] args) throws IOException {
 		System.out.println(recipesList_LCHF());
-		
+
 	}
-	
+
 	public static ArrayList<recipeObjLCHF> recipesList_LCHF() throws IOException {
-		
+
 		int totalRecipes = 0;
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
-		
-		String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+
+		String fileName = System.getProperty("user.dir") + "\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList_LCHF(fileName, 0);
-		
-		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=M&pageindex=";
 		String baseUrl = sampleUrl + "1";
 		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
 		int pageCount = 0;
-		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
-		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
+		for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
 			System.out.println("At page ####  :  " + alphabet);
 			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
 			String url_part2 = "&pageindex=";
@@ -67,9 +59,7 @@ public class LCHF_Recipes {
 			pageCount = Integer.parseInt(pageList.last().text());
 			System.out.println("number of pages: " + pageList.last().text());
 
-			String rc_name ="";
-			pageCount = 5; // REMOVE IT
-			
+			String rc_name = "";
 
 			for (int page = 1; page <= pageCount; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
@@ -80,21 +70,21 @@ public class LCHF_Recipes {
 
 				ids.clear();
 				links.clear();
-				
+
 				for (Element rc : recipesList) {
 					rc_name = (rc.select("div.rcc_recipecard span.rcc_recipename a").text());
 					String recipeId = rc.select("div.rcc_recipecard").attr("id");
 					ids.add(recipeId.substring(3));
-					//System.out.println("Recipe Name ##### "+rc_name );
+					// System.out.println("Recipe Name ##### "+rc_name );
 				}
 				// RECIPE LINKS
 				Elements linksList = null;
 				linksList = currentDoc.select("div.rcc_recipecard span.rcc_recipename a");
 				for (Element link : linksList) {
 					links.add(link.attr("abs:href"));
-					//System.out.println("Recipe links: #####"+ link.attr("abs:href"));
+					// System.out.println("Recipe links: #####"+ link.attr("abs:href"));
 				}
-				
+
 				int i = 0;
 				// loop through the links to access the data for each recipe in a single page
 				for (i = 0; i < links.size() - 1; i++) {
@@ -106,18 +96,19 @@ public class LCHF_Recipes {
 						if (e.getStatusCode() == 404)
 							continue;
 					}
-					
+
 					// INGREDIENTS
 					ArrayList<String> ingredients = new ArrayList<>();
 					ingredients.clear();
 
 					Element ingredients_div = r_page.select("div#rcpinglist").first();
 					assert ingredients_div != null;
-					//Elements ingredients_qty = ingredients_div.select("[itemprop=recipeIngredient]");
+					// Elements ingredients_qty =
+					// ingredients_div.select("[itemprop=recipeIngredient]");
 					Elements ingredients_links = ingredients_div.select("a");
 					for (Element e : ingredients_links) {
 						ingredients.add(e.text());
-						//System.out.println("ingredients list :#####"+ingredients);
+						// System.out.println("ingredients list :#####"+ingredients);
 					}
 
 					// CHECK IF RECIPE HAS ITEMS FROM ELIMINATED LIST
@@ -125,7 +116,7 @@ public class LCHF_Recipes {
 
 						if (hasEliminatedItems(ingredients)) { // System.out.println(" has elminated is TRUE");
 							{
-								//System.out.println("Inside the has Eliminated looooooooooooooooooooooop");
+
 								continue;
 							}
 						}
@@ -155,7 +146,7 @@ public class LCHF_Recipes {
 					String prepMethodStr = "";
 					ArrayList<String> prepMethod = new ArrayList<>();
 					prepMethod.clear();
-					
+
 					Element prepMethod_div = null;
 					Elements prepMethod_links = null;
 
@@ -163,9 +154,9 @@ public class LCHF_Recipes {
 					prepMethod_links = prepMethod_div.select("[itemprop = text]");
 					for (Element e : prepMethod_links) {
 						prepMethod.add(e.text());
-						//System.out.println(e.text());
+						// System.out.println(e.text());
 					}
-					
+
 					// Checking if recipe is from the 'Avoid list'
 					try {
 						if (recipesToBeAvoided(ingredients)) {
@@ -181,14 +172,13 @@ public class LCHF_Recipes {
 
 					prepMethodStr = String.join(",", prepMethod);
 
-
 					// TAGS
 					tags.clear();
 					Elements tagsList = r_page.select("div.tags a span");
 					for (Element ele : tagsList) {
 						tags.add(ele.text());
 					}
-					
+
 					// RECIPE CATEGORY
 					recipeCategory = "";
 					recipeCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 2);
@@ -198,7 +188,6 @@ public class LCHF_Recipes {
 							break;
 						}
 					}
-					
 
 					// FOOD CATEGORY
 					foodCategoryXL = Get_IngredientsList.get_FoodCategory(fileName, 0);
@@ -210,7 +199,7 @@ public class LCHF_Recipes {
 							break;
 						}
 					}
-					
+
 					// NUMBER OF SERVINGS
 					numServings = "";
 					String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
@@ -224,7 +213,7 @@ public class LCHF_Recipes {
 							continue;
 						}
 					}
-					
+
 					String cuisineCategoryFinal = "";
 					cuisineCategoryFinal = String.join(",", cuisineCategory);
 
@@ -244,11 +233,11 @@ public class LCHF_Recipes {
 							}
 						}
 					}
-					
+
 					// Check if the recipe contains at least one item from the ADD list, otherwise
 					// ignore it
 					AddToList = Get_IngredientsList.get_EliminateList_LCHF(fileName, 1);
-					
+
 					try {
 
 						if (recipesGoodToAdd(ingredients) == false) // None of the ingredients exist in the Add list
@@ -260,7 +249,6 @@ public class LCHF_Recipes {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
 
 					String ingredientsFinal = String.join(",", ingredients);
 					String tagsFinal = String.join(",", tags);
@@ -270,83 +258,83 @@ public class LCHF_Recipes {
 							prepTime, cookTime, tagsFinal, numServings, cuisineCategoryFinal, description,
 							prepMethodStr, nutrientsString, link));
 
-				
-				
+				}
 			}
+
 		}
-		
-	}
 		System.out.println("Total number of recipes    " + totalRecipes);
 		return recipes;
-		
 
-}
+	}
+
 	// HAS ELIMINATED ITEMS FUNCTION
-		public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
-			//System.out.println(Ingredients);
-			//System.out.println("-------------------------------------------------------");
-			//System.out.println("eleminate comparison "+ eliminateList);
-			//Ingredients.clear();
-			//Ingredients.add("long grain rice");
-			for (String str : Ingredients) {
-				for (String str2 : eliminateList) {
-					if (str.toLowerCase().trim().contains(str2.toLowerCase().trim())) {
-						
-						//System.out.println("ingredients comparison "+str);
-						//System.out.println("eleminate comparison "+str2);
-						
-						return true;
-					}
+	public static boolean hasEliminatedItems(ArrayList<String> Ingredients) throws IOException {
+		// System.out.println(Ingredients);
+		// System.out.println("-------------------------------------------------------");
+		// System.out.println("eleminate comparison "+ eliminateList);
+		// Ingredients.clear();
+		// Ingredients.add("long grain rice");
+		for (String str : Ingredients) {
+			for (String str2 : eliminateList) {
+				if (str.toLowerCase().trim().contains(str2.toLowerCase().trim())) {
+
+					// System.out.println("ingredients comparison "+str);
+					// System.out.println("eleminate comparison "+str2);
+
+					return true;
 				}
 			}
-			return false;
 		}
-		
-		////////////////
-		
-		//////////////////
-		
-		// Recipes to avoid
-		public static boolean recipesToBeAvoided(ArrayList<String> Ingredients) {
-			List<String> recipesToAvoidList = Arrays.asList(new String[] { "cheese", "bread", "sausage", "biscuits", "cereal", "canned", "chips", "instant", "ready made" });
-			for (String str : Ingredients) {
-				for (String str2 : recipesToAvoidList) {
-					if (str.contains(str2)) {
-						System.out.println("String matches from Ingredients           " + str);
-						System.out.println("String matches from ToAvoidList           " + str2);
-						return true;
-					}
+		return false;
+	}
+
+	////////////////
+
+	//////////////////
+
+	// Recipes to avoid
+	public static boolean recipesToBeAvoided(ArrayList<String> Ingredients) {
+		List<String> recipesToAvoidList = Arrays.asList(new String[] { "cheese", "bread", "sausage", "biscuits",
+				"cereal", "canned", "chips", "instant", "ready made" });
+		for (String str : Ingredients) {
+			for (String str2 : recipesToAvoidList) {
+				if (str.contains(str2)) {
+					System.out.println("String matches from Ingredients           " + str);
+					System.out.println("String matches from ToAvoidList           " + str2);
+					return true;
 				}
 			}
-			return false;
 		}
-		
-		// Check if tag exists in the Cuisine Category Master List
-		public static String checkTags(String tag, ArrayList<String> cuisineCategoryXL) {
-			String tags_found = "";
-			String excelVal = "";
-			ArrayList<String> tagList = new ArrayList<>(Arrays.asList(tag.split(" ")));
-			Iterator<String> it = cuisineCategoryXL.iterator();
-			while (it.hasNext()) {
-				excelVal = it.next();
-				if (tagList.contains(excelVal)) {
-					tags_found = excelVal;
+		return false;
+	}
+
+	// Check if tag exists in the Cuisine Category Master List
+	public static String checkTags(String tag, ArrayList<String> cuisineCategoryXL) {
+		String tags_found = "";
+		String excelVal = "";
+		ArrayList<String> tagList = new ArrayList<>(Arrays.asList(tag.split(" ")));
+		Iterator<String> it = cuisineCategoryXL.iterator();
+		while (it.hasNext()) {
+			excelVal = it.next();
+			if (tagList.contains(excelVal)) {
+				tags_found = excelVal;
+			}
+		}
+		return tags_found;
+	}
+
+	// Make sure the final recipes contain atleast one item from this list
+	public static boolean recipesGoodToAdd(ArrayList<String> Ingredients) {
+		for (String ingredient : Ingredients) {
+			for (String AddItem : AddToList) {
+				if (AddItem.contains(ingredient)) {
+					System.out.println("AddItem ----->             " + AddItem);
+					System.out.println("ingredient ----->             " + ingredient);
+					return true;
 				}
 			}
-			return tags_found;
 		}
-		// Make sure the final recipes contain atleast one item from this list
-		public static boolean recipesGoodToAdd(ArrayList<String> Ingredients) {
-			for (String ingredient : Ingredients) {
-				for (String AddItem : AddToList) {
-					if (AddItem.contains(ingredient)) {
-						System.out.println("AddItem ----->             " + AddItem);
-						System.out.println("ingredient ----->             " + ingredient);
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-		
+		return false;
+	}
+
 }
