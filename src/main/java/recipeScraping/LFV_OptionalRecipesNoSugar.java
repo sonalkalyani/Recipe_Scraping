@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class OptionalRecipes {
+public class LFV_OptionalRecipesNoSugar {
 	private static ArrayList<String> eliminateList = new ArrayList<>();
 	private static ArrayList<recipeObjDrinks> recipesDrink = new ArrayList<>();
 
@@ -33,10 +33,10 @@ public class OptionalRecipes {
 		int ExtractedRecipesCount = 0;
 
 		Elements pageList = document.select("#maincontent > div:nth-child(1) > div:nth-child(2) a");
-	//	pageCount = Integer.parseInt(pageList.last().text());
+		pageCount = Integer.parseInt(pageList.last().text());
 		System.out.println("number of pages: " + pageList.last().text());
 
-		for (int page = 1; page <= 2; page++) {
+		for (int page = 1; page <= pageCount; page++) {
 			System.out.println("Getting inside the loop for page number:  " + page);
 
 			String url = sampleUrl + url_part2 + page;
@@ -48,11 +48,11 @@ public class OptionalRecipes {
 				Elements recipesList = currentDoc.select("article[itemprop='itemListElement']"); // 24
 				// RECIPE LINKS
 				linksList = currentDoc.select("article[itemprop='itemListElement'] span[itemprop='name'] a");
-				// div.rcc_recipecard span.rcc_recipename a").text());
+			
 				links.clear();
 				for (Element link : linksList) {
 					links.add(link.attr("abs:href"));
-				//	System.out.println(link.attr("abs:href"));
+			
 				}
 
 			
@@ -163,8 +163,6 @@ public class OptionalRecipes {
 
 		for (String str : ingredients) {
 			if (str.contains("sugar")) {
-				// System.out.println("String from prep method ---"+str);
-				// System.out.println("String from optionalRecipeList method ---"+str2);
 				return true;
 			}
 		}
