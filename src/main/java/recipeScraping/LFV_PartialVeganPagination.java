@@ -47,10 +47,8 @@ public class LFV_PartialVeganPagination {
 		ArrayList<String> ids = new ArrayList<>();
 
 
-		// reading eliminateList from excel
-		String fileName = "/Users/saumdas/git/Recipe_Scraping/Ingredients.xlsx";
-		
-
+		// Read partial vegan
+		String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList(fileName, 1);
 
 
