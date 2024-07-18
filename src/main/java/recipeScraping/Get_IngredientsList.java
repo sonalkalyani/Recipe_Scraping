@@ -77,6 +77,9 @@ public class Get_IngredientsList {
 		System.out.println(foodCategory);
 		
 	}
+
+
+
 	
 	//Eliminate list LCHF
 		public static ArrayList<String> get_EliminateList_LCHF(String fileName, int columnNumber) throws IOException {
@@ -101,6 +104,6 @@ public class Get_IngredientsList {
 			inputStream.close();
 
 			return eliminateList;
-		}
 	
+}
 }

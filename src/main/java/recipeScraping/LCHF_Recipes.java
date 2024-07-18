@@ -49,15 +49,15 @@ public class LCHF_Recipes {
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 		
-		String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = "/Users/saumdas/git/Recipe_Scraping/Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList_LCHF(fileName, 0);
 		
-		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=M&pageindex=";
 		String baseUrl = sampleUrl + "1";
 		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
 		int pageCount = 0;
 		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
-		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
+		for (char alphabet = 'M'; alphabet <= 'W'; alphabet++) { // REMOVE IT
 			System.out.println("At page ####  :  " + alphabet);
 			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
 			String url_part2 = "&pageindex=";
@@ -68,7 +68,7 @@ public class LCHF_Recipes {
 			System.out.println("number of pages: " + pageList.last().text());
 
 			String rc_name ="";
-			pageCount = 5; // REMOVE IT
+			pageCount =3; // REMOVE IT
 			
 
 			for (int page = 1; page <= pageCount; page++) {

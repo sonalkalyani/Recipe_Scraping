@@ -46,18 +46,22 @@ public class LFV_PartialVeganPagination {
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 
-		// Read partial vegan
-		String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
+
+		// reading eliminateList from excel
+		String fileName = "/Users/saumdas/git/Recipe_Scraping/Ingredients.xlsx";
+		
+
 		eliminateList = Get_IngredientsList.get_EliminateList(fileName, 1);
 
-		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=X&pageindex=";
 		String baseUrl = sampleUrl + "1";
-		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
-		int pageCount = 0;
+		Document document = Jsoup.connect(baseUrl).timeout(8000).get();
+		int pageCount = 4;
 		int ExtractedRecipesCount = 0;
 		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
-		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
-			System.out.println("At page ####  :  " + alphabet);
+		for (char alphabet = 'X'; alphabet <= 'X'; alphabet++) { // REMOVE IT
+			//System.out.println("At page ####  :  " + alphabet);
 			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
 			String url_part2 = "&pageindex=";
 			String url_AZ = url_part1 + alphabet + url_part2 + "1";
@@ -70,7 +74,7 @@ public class LFV_PartialVeganPagination {
 			//pageCount = ; // REMOVE IT
 			
 			
-			for (int page = 1; page <= pageCount; page++) {
+			for (int page = 1; page <= 4; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
 				
 				String url = url_part1 + alphabet + url_part2 + page;
@@ -83,7 +87,7 @@ public class LFV_PartialVeganPagination {
 				
 				for (Element rc : recipesList) {
 					rc_name = (rc.select("div.rcc_recipecard span.rcc_recipename a").text());
-					System.out.println("Name is                           --------->"+     rc_name);
+					//System.out.println("Name is                           --------->"+     rc_name);
 					String recipeId = rc.select("div.rcc_recipecard").attr("id");
 					ids.add(recipeId.substring(3));
 					
@@ -123,7 +127,7 @@ public class LFV_PartialVeganPagination {
 						}
 					}
 					else
-						System.out.println("This recipe has no ingredients");
+						//System.out.println("This recipe has no ingredients");
 					
 					
 //					for (Element e : ingredients_qty) {
@@ -182,7 +186,7 @@ public class LFV_PartialVeganPagination {
 						}
 					}
 					else
-						System.out.println("This recipe has no prep method");
+						//System.out.println("This recipe has no prep method");
 					
 						
 
@@ -190,7 +194,7 @@ public class LFV_PartialVeganPagination {
 					try {
 						if (recipesToBeAvoided(prepMethod)) {
 							//System.out.println("Recipe Name " + rc_name);
-							System.out.println("Avoiding this recipe......................");
+							//System.out.println("Avoiding this recipe......................");
 							prepMethod.clear();
 							continue;
 						}
@@ -210,7 +214,7 @@ public class LFV_PartialVeganPagination {
 							}
 					}
 					else
-						System.out.println("This recipe has no tags");
+						//System.out.println("This recipe has no tags");
 
 					// RECIPE CATEGORY
 					recipeCategory = "";
@@ -233,11 +237,19 @@ public class LFV_PartialVeganPagination {
 						}
 					}
 					// NUMBER OF SERVINGS
+
+					
+					
+					
+					String str = r_page.select("#ctl00_cntrightpanel_lblServes").text();
+					if (str != null)
+						numServings = str;
 					numServings = "";
 					String servings = r_page.select("#ctl00_cntrightpanel_lblServes").text();
 					if (servings != null)
 						//numServings = servings.substring(servings.indexOf("M"));
 						numServings = servings;
+
 					else
 					{
 						numServings = "";
@@ -265,7 +277,7 @@ public class LFV_PartialVeganPagination {
 					else
 					{
 						description="";
-						System.out.println("This recipe has no description");
+						//System.out.println("This recipe has no description");
 					}
 
 					
@@ -284,7 +296,7 @@ public class LFV_PartialVeganPagination {
 					else
 					{
 						nutrientsString = "";
-						System.out.println("This recipe has no nutrients");
+						//System.out.println("This recipe has no nutrients");
 					}
 					
 					// Check if the recipe contains at least one item from the ADD list, otherwise
@@ -348,7 +360,7 @@ public class LFV_PartialVeganPagination {
 	}
 
 	// Return arraylist of extracted recipes
-	public ArrayList<recipeObj1> getRecipes() {
+	public static ArrayList<recipeObj1> getRecipes() {
 		return recipes;
 	}
 
