@@ -28,9 +28,9 @@ public class Allergies {
 	// MAIN METHOD
 	public static void main(String[] args) throws Exception {
 		ArrayList<String> allergens = new ArrayList<>();
-		allergens.add("almonds");
-		allergens.add("almond");
-		allergens.add("cashewnuts");
+		allergens.add("Milk");
+		allergens.add("milk");
+	//	allergens.add("cashewnuts");
 		System.out.println(recipesList(allergens)); // Result set of recipes with elimiated criteria met, avoid recipes
 													// met, Add recipes met
 	}
@@ -39,25 +39,25 @@ public class Allergies {
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 
-		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";
+		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=M&pageindex=";
 		String baseUrl = sampleUrl + "1";
 		Document document = Jsoup.connect(baseUrl).timeout(10 * 1000).get();
 		int pageCount = 0;
 		int ExtractedRecipesCount = 0;
 		// for(char alphabet = 'A'; alphabet<='Z'; alphabet++) {
-		for (char alphabet = 'A'; alphabet <= 'A'; alphabet++) { // REMOVE IT
+		for (char alphabet = 'M'; alphabet <= 'M'; alphabet++) { // REMOVE IT
 			System.out.println("At page ####  :  " + alphabet);
 			String url_part1 = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=";
 			String url_part2 = "&pageindex=";
 			String url_AZ = url_part1 + alphabet + url_part2 + "1";
 			Document AZ_Doc = Jsoup.connect(url_AZ).get();
 			Elements pageList = AZ_Doc.select("#maincontent > div:nth-child(1) > div:nth-child(2) a");
-			pageCount = Integer.parseInt(pageList.last().text());
+		//	pageCount = Integer.parseInt(pageList.last().text());
 			System.out.println("number of pages: " + pageList.last().text());
 
 			String rc_name = "";
 
-			for (int page = 0; page <= pageCount; page++) {
+			for (int page = 0; page <= 1; page++) {
 				System.out.println("Getting inside the loop for page number:  " + page);
 
 				String url = url_part1 + alphabet + url_part2 + page;
@@ -157,6 +157,7 @@ public class Allergies {
 		return recipesAllergens;
 	}
 
+	
 	// HAS ELIMINATED ALLERGENS FUNCTION
 	public static boolean hasAllergens(ArrayList<String> Ingredients, ArrayList<String> allergen) throws IOException {
 		for (String str : Ingredients) {
