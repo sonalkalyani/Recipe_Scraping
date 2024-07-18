@@ -143,8 +143,6 @@ public class LFV_OptionalRecipes {
 						link)
 						);
 				
-//				System.out.println("Size of the recipes that are avoided is:" + recipesWithoutSugar.size());
-//				System.out.println(recipesWithoutSugar);
 			}
 	
 
@@ -175,10 +173,6 @@ public class LFV_OptionalRecipes {
 	//HAS ELIMINATED ITEMS FUNCTION
 	public static boolean optionalRecipes(ArrayList<String> ingredients) throws IOException {
 		
-//		ArrayList<String>optionalRecipeList = new ArrayList<>();  ajwain, spinach, sugar,
-//		optionalRecipeList.add("sugar");
-//		optionalRecipeList.add("without sugar");
-//		optionalRecipeList.add("zero sugar");
 		
 
 		for (String str : ingredients) {
