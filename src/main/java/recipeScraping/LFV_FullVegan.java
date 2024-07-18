@@ -128,7 +128,7 @@ public class LFV_FullVegan {
 				
 				//reading eliminateList from excel
 				
-				String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+				String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
 				
 				//System.out.println("eliminate items " + eliminateList );

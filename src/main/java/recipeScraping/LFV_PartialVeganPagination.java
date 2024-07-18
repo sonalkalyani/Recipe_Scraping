@@ -47,7 +47,7 @@ public class LFV_PartialVeganPagination {
 		ArrayList<String> ids = new ArrayList<>();
 
 		// Read partial vegan
-		String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 		eliminateList = Get_IngredientsList.get_EliminateList(fileName, 1);
 
 		String sampleUrl = "https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=A&pageindex=";

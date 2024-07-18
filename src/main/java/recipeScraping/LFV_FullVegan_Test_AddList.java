@@ -35,7 +35,7 @@ public class LFV_FullVegan_Test_AddList {
 
 	public static void main(String[] args) throws IOException {
 		
-		String fileName = "C:\\Users\\vmman\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 		eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
 		
 		String url = "https://www.tarladalal.com/RecipeAtoZ.aspx";

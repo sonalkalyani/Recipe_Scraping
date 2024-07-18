@@ -28,7 +28,7 @@ public class LFV_OptionalRecipes {
 		ArrayList<String> links = new ArrayList<>();
 		ArrayList<String> ids = new ArrayList<>();
 		
-		String fileName = "C:\\Users\\reshm\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
 		eliminateList=Get_IngredientsList.get_EliminateList(fileName, 1);
 		
 		
