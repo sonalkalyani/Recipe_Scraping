@@ -15,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
 
 public class LFV_PartialVegan {
 
@@ -48,10 +47,7 @@ public class LFV_PartialVegan {
 				/* Butter ghee salmon mackerel sardines */
 				//reading eliminateList from excel
 
-
-				
-				String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";
-				
+				String fileName = System.getProperty("user.dir")+"\\Ingredients.xlsx";				
 				eliminateList=Get_IngredientsList.get_EliminateList(fileName, 0);
 				
 				//System.out.println("eliminate items " + eliminateList );
