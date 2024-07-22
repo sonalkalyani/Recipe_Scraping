@@ -1,4 +1,4 @@
-package dbtests;
+package recipeScraping;
 
 import java.io.IOException;
 import java.sql.Connection;
