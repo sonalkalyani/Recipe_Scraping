@@ -23,7 +23,7 @@ public class LCHF_FoodProcessing {
 
 		int RecipesCount = 0;
 
-		String fileName = "C:\\Users\\balbi\\git\\Recipe_Scraping\\Ingredients.xlsx";
+		String fileName = System.getProperty("user.dir") + "\\Ingredients.xlsx";
 		CategoriesToKeep = Get_IngredientsList.get_EliminateList_LCHF(fileName, 3);
 		for (int i = 1; i <= LCHF_List.size() - 1; i++) {
 			System.out.println("PrepMethod is              " + LCHF_List.get(i).getPrepMethod());
